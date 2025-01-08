@@ -1,41 +1,61 @@
 import React from "react";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line, Pie, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-const Graph = ({ data }) => {
+const Graph = ({ data, type, title }) => {
   const options = {
     responsive: true,
     plugins: {
       legend: {
-        display: false, // Hide the legend if not needed
+        display: type !== "Bar", // Show legend only for non-Bar charts
       },
       title: {
-        display: true,
-        text: "Comparison of Total Users, Total Orders, and Interested Users",
+        display: !!title,
+        text: title || "",
       },
     },
-    scales: {
+    scales: type === "Bar" || type === "Line" ? {
       y: {
         beginAtZero: true,
         ticks: {
           stepSize: 200,
         },
       },
-    },
+    } : undefined,
   };
 
-  return <Bar data={data} options={options} />;
+  const ChartComponent = {
+    Bar: Bar,
+    Line: Line,
+    Pie: Pie,
+    Doughnut: Doughnut,
+  }[type || "Bar"];
+
+  return <ChartComponent data={data} options={options} />;
 };
 
 export default Graph;

@@ -1,5 +1,5 @@
 const express = require('express');
-const { countLoggedInUsers, createAdmin, loginAdmin, getAllAdmin, getaAdmin, deleteAdmin, blockAdmin, unblockAdmin, verifyOtp, updatePassword, resetPassword, handleRefreshToken, generateRefreshToken } = require('../controller/adminCtrl');
+const { countLoggedInUsers, createAdmin, loginAdmin, getAllAdmin, getaAdmin, deleteAdmin, blockAdmin, unblockAdmin, verifyOtp, updatePassword, resetPassword, handleRefreshToken, generateRefreshToken, getSellerMetrics, getEarningsData } = require('../controller/adminCtrl');
 const upload = require('../middlewares/multer');
 
 const {
@@ -67,5 +67,9 @@ router.get("/orders/delivered", getDeliveredOrders);
 router.get('/interested-users',authAdminMiddleware,getAllInterestedUsersForAdmin)
 //-get all orders---------------
 router.get('/orders', getAllOrders);
+//-----------sellers for graph-----------
+router.get('/seller-metrics', authAdminMiddleware, getSellerMetrics);
+router.get("/earnings", getEarningsData);
+
 
 module.exports = router;
