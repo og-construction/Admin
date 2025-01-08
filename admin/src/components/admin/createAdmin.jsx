@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { baseurl } from "../config/url";
 
 const CreateAdmin = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ const CreateAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/admin/create-admin", formData);
+      await axios.post(`${baseurl}/api/admin/create-admin`, formData);
       alert("Admin created successfully!");
       setFormData({ name: "", email: "", password: "", mobile: "", role: "admin" });
     } catch (error) {

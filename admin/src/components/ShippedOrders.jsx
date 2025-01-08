@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { baseurl } from "./config/url";
 
 const ShippedOrders = () => {
   const [ShippedOrders, setShippedOrders] = useState([]);
@@ -10,7 +11,7 @@ const ShippedOrders = () => {
     const fetchShippedOrders = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/admin/orders/shipped"
+          `${baseurl}/api/admin/orders/shipped`
         );
         setShippedOrders(response.data);
       } catch (error) {

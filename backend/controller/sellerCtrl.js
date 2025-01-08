@@ -1506,6 +1506,50 @@ const getInterestedUsers = asyncHandler(async (req, res) => {
     });
   }
 });
+const getAllInterestedUsersForAdmin = asyncHandler(async (req, res) => {
+  try {
+    // Check if the requester is an admin
+    if (!req.admin || req.admin.role !== "admin") {
+      return res.status(403).json({ message: "Unauthorized access" });
+    }
+
+    // Fetch all interested users without filtering by seller
+    const interestedUsers = await InterestedUser.find({})
+      .populate({
+        path: "userId",
+        select: "name email mobile", // Fields to include from User model
+      })
+      .populate({
+        path: "productId",
+        populate: [
+          {
+            path: "image", // Populate 'image' if it's a reference
+          },
+          {
+            path: "category", // Populate 'category'
+            select: "name", // Include only the 'name' field from the Category model
+          },
+          {
+            path: "subcategory", // Populate 'subcategory'
+            select: "name", // Include only the 'name' field from the Subcategory model
+          },
+        ],
+      });
+
+    if (!interestedUsers || interestedUsers.length === 0) {
+      return res.status(404).json({ message: "No interested users found" });
+    }
+
+    // Format and send the response
+    res.status(200).json(interestedUsers);
+  } catch (error) {
+    console.error("Error fetching all interested users for admin:", error);
+    res.status(500).json({
+      message: "Failed to retrieve interested users",
+      error: error.message,
+    });
+  }
+});
 
 const removeInterestedUser = asyncHandler(async (req, res) => {
   const { userId, productId } = req.body; // Extract userId and productId from the request body
@@ -1709,4 +1753,5 @@ module.exports = {
   getSellerDetailsById,
   getInterestedUsers,
   removeInterestedUser,
+  getAllInterestedUsersForAdmin,
 };

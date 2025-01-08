@@ -10,13 +10,14 @@ const {
     unblockUser,
 } = require('../controller/userCtrl'); // Import the user controller functions
 const {  isAdmin, authUserMiddleware, authAdminMiddleware } = require('../middlewares/authMiddleware');
-const { approveProduct, deleteSeller, blockSeller, unblockSeller, getSellerDetails, getProductsBySubcategoryId, deleteProduct, updateProduct } = require('../controller/sellerCtrl');
+const { approveProduct, deleteSeller, blockSeller, unblockSeller, getSellerDetails, getProductsBySubcategoryId, deleteProduct, updateProduct, getAllInterestedUsersForAdmin } = require('../controller/sellerCtrl');
 const { getOrderSummary, getPendingOrders, getConfirmedOrders, getShippedOrders, getCancelledOrders, getDeliveredOrders } = require('../controller/adminorderCtrl');
+const { getAllOrders } = require('../controller/OrderCtrl');
 
 const router = express.Router();
 
 // Define the routes
-router.get('/user/all-users', authAdminMiddleware, getAllUsers); // Get all users
+router.get('/user/all-users',getAllUsers); // Get all users
 router.put('/user/update/:id',authAdminMiddleware,  updateUser); // Update user
 router.delete('/user/delete/:id', authAdminMiddleware,deleteUser); // Delete user
 router.put('/user/block/:id', authAdminMiddleware, blockUser); // Block user
@@ -62,6 +63,9 @@ router.get("/orders/shipped", getShippedOrders);
 router.get("/orders/cancelled", getCancelledOrders);
 router.get("/orders/delivered", getDeliveredOrders);
 
-
+//-------------all interested users
+router.get('/interested-users',authAdminMiddleware,getAllInterestedUsersForAdmin)
+//-get all orders---------------
+router.get('/orders', getAllOrders);
 
 module.exports = router;

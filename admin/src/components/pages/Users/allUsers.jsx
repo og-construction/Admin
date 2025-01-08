@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -7,7 +8,7 @@ const AllUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users");
+        const response = await axios.get(`${baseurl}/api/users`);
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error.message);
@@ -19,7 +20,7 @@ const AllUsers = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await axios.delete(`${baseurl}/api/users/${id}`);
       setUsers(users.filter((user) => user._id !== id));
       alert("User deleted successfully!");
     } catch (error) {
@@ -30,7 +31,7 @@ const AllUsers = () => {
   const handleBlock = async (id, isBlocked) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/users/${id}/${isBlocked ? "unblock" : "block"}`
+        `${baseurl}/api/users/${id}/${isBlocked ? "unblock" : "block"}`
       );
       setUsers(
         users.map((user) =>

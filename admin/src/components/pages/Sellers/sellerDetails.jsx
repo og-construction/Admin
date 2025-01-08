@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const SellerDetails = () => {
   const { id } = useParams();
@@ -9,7 +10,7 @@ const SellerDetails = () => {
   useEffect(() => {
     const fetchSellerDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/admin/sellers/${id}`);
+        const response = await axios.get(`${baseurl}/api/admin/sellers/${id}`);
         setSeller(response.data);
       } catch (error) {
         console.error("Error fetching seller details:", error.message);

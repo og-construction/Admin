@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const NewUsers = () => {
   const [users, setUsers] = useState([]);
@@ -7,7 +8,7 @@ const NewUsers = () => {
   useEffect(() => {
     const fetchNewUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/new");
+        const response = await axios.get(`${baseurl}/api/users/new`);
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching new users:", error.message);
