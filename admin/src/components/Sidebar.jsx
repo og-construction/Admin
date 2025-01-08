@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import {
   Dashboard,
   ShoppingCart,
@@ -12,15 +12,21 @@ import {
   ExpandLess,
   ShoppingBag,
   People,
+  Logout
 } from "@mui/icons-material";
 
 const Sidebar = () => {
   const [expandedMenu, setExpandedMenu] = useState(null); // Tracks which menu is expanded
+  const navigate = useNavigate();
 
   const toggleMenu = (menuName) => {
     setExpandedMenu(expandedMenu === menuName ? null : menuName);
   };
-
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("admin");
+    navigate("/login"); // Redirect to login page
+  };
   const menuItems = [
     { name: "Dashboard", path: "/", icon: <Dashboard /> },
     {
@@ -130,8 +136,22 @@ const Sidebar = () => {
                 <span className="font-medium">{item.name}</span>
               </Link>
             )}
+      
+
           </li>
         ))}
+
+<li className="cursor-pointer">
+          <button
+            onClick={handleLogout}
+            className="flex items-center p-2 rounded-lg hover:bg-gray-700 transition duration-300 w-full text-left"
+          >
+            <Logout className="text-gray-400 mr-3" />
+            <span className="font-medium">Logout</span>
+          </button>
+        </li>
+
+
       </ul>
     </div>
   );

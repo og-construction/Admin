@@ -228,9 +228,15 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
 
 // Get All Users
 const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find();
-  res.status(200).json(users);
+  try {
+    const users = await User.find();
+    res.status(200).json({ totalUsers: users.length, users });
+  } catch (error) {
+    console.error("Error fetching users:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
+
 // Get a user
 const getaUser = asyncHandler(async (req, res) => {
   const { id } = req.params;

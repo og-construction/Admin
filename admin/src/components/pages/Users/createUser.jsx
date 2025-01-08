@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const CreateUser = () => {
   const [form, setForm] = useState({
@@ -14,7 +15,7 @@ const CreateUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/users", form);
+      await axios.post(`${baseurl}/api/users`, form);
       alert("User created successfully!");
       setForm({ name: "", email: "", password: "", mobile: "", type: "B2C", gstNumber: "" });
     } catch (error) {

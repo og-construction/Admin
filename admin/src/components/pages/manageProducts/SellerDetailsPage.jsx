@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const SellerDetailsPage = () => { // Component name starts with an uppercase letter
   const { sellerId } = useParams(); // Get seller ID from the URL
@@ -12,7 +13,8 @@ const SellerDetailsPage = () => { // Component name starts with an uppercase let
   useEffect(() => {
     const fetchSeller = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/seller/${sellerId}`); // Replace with your API endpoint
+        const sellerId = localStorage.getItem("sellerId");
+        const response = await axios.get(`${baseurl}seller/${sellerId}`); // Replace with your API endpoint
         setSeller(response.data);
       } catch (err) {
         setError(err.response ? err.response.data.message : "Error fetching seller details");

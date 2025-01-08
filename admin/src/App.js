@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./components/Dashboard";
 import Orders from "./components/Orders";
@@ -26,48 +26,67 @@ import CreateProduct from "./components/pages/manageProducts/CreateProduct";
 import SellerProduct from "./components/pages/manageProducts/SellerProducts";
 import SaleBySellerPage from "./components/pages/manageProducts/SaleBySellerPage";
 import SaleByOGCSPage from "./components/pages/manageProducts/SaleByOGCSPage";
-import SellerDetailsPage from "./components/pages/manageProducts/SellerDetailsPage";
+import Login from "./components/admin/loginpage";
+import ProtectedRoute from "./components/protectedRoute/protectedRoute.jsx";
+import SellerDetailsPage from "./components/pages/manageProducts/SellerDetailsPage.jsx";
+import OgcsSellerDetailsPage from "./components/pages/manageProducts/OgcsSellerDetailsPage.jsx";
+
 const App = () => {
   return (
     <Router>
-      <div className="flex min-h-screen">
-        {/* Sidebar */}
-        <Sidebar />
+      <Routes>
+        {/* Public Route */}
+        <Route path="/login" element={<Login />} />
 
-        {/* Main Content Area */}
-        <div className="flex-grow p-4 bg-gray-100">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/orders/all" element={<Orders />} />
-            <Route path="/orders/pending" element={<PendingOrders />} />
-            <Route path="/orders/confirmed" element={<ConfirmedOrders/>} />
-            <Route path="/orders/shipped" element={<ShippedOrders/>} />
-            <Route path="/orders/delivered" element={<DeliveredOrders/>} />
-            <Route path="/orders/canceled" element={<CanceledOrders/>} />
-            <Route path="/category" element={<CategoryManagement/>} />
-            <Route path="/subcategories" element={<SubcategoryManagement/>}/>
-            <Route path="/users/all" element={<AllUsers/>}/>
-            <Route path="/users/create" element={<CreateUser/>}/>
-            <Route path="/users/new" element={<NewUsers/>}/>
-            <Route path="/admins/create" element={<CreateAdmin/>}/>
-            <Route path="/admins/all" element={<ManageAdmins/>}/>
-            <Route path="/salebysellers" element={<InterestedUsers/>}/>
-            <Route path="/products" element={<Products />} /> 
-            <Route path="/products/new" element={<NewProduct />} />
-            <Route path="/products/total" element={<TotalProducts />} />
-            <Route path="/products/approved" element={<ApprovedProducts />} />
-            <Route path="/products/not-approved" element={<NotApprovedProducts />} />
-            <Route path="/products/details/:id" element={<ProductDetails />} />
-            <Route path="/products/create" element={<CreateProduct/>} />
-            <Route path="/seller-products" element={<SellerProduct/>} />
-            <Route path="/sale-by-seller" element={<SaleBySellerPage />} />
-            <Route path="/sale-by-ogcs" element={<SaleByOGCSPage />} />
-            <Route path="/seller-details/:sellerId" element={<SellerDetailsPage />} />
+        {/* Protected Routes */}
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <div className="flex min-h-screen">
+                {/* Sidebar only for authenticated users */}
+                <Sidebar />
 
-            {/* Add other routes here */}
-          </Routes>
-        </div>
-      </div>
+                {/* Main Content Area */}
+                <div className="flex-grow p-4 bg-gray-100">
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/orders/all" element={<Orders />} />
+                    <Route path="/orders/pending" element={<PendingOrders />} />
+                    <Route path="/orders/confirmed" element={<ConfirmedOrders />} />
+                    <Route path="/orders/shipped" element={<ShippedOrders />} />
+                    <Route path="/orders/delivered" element={<DeliveredOrders />} />
+                    <Route path="/orders/canceled" element={<CanceledOrders />} />
+                    <Route path="/category" element={<CategoryManagement />} />
+                    <Route path="/subcategories" element={<SubcategoryManagement />} />
+                    <Route path="/users/all" element={<AllUsers />} />
+                    <Route path="/users/create" element={<CreateUser />} />
+                    <Route path="/users/new" element={<NewUsers />} />
+                    <Route path="/admins/create" element={<CreateAdmin />} />
+                    <Route path="/admins/all" element={<ManageAdmins />} />
+                    <Route path="/salebysellers" element={<InterestedUsers />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/products/new" element={<NewProduct />} />
+                    <Route path="/products/total" element={<TotalProducts />} />
+                    <Route path="/products/approved" element={<ApprovedProducts />} />
+                    <Route path="/products/not-approved" element={<NotApprovedProducts />} />
+                    <Route path="/products/details/:id" element={<ProductDetails />} />
+                    <Route path="/products/create" element={<CreateProduct />} />
+                    <Route path="/seller-products" element={<SellerProduct />} />
+                    <Route path="/sale-by-seller" element={<SaleBySellerPage />} />
+                    <Route path="/seller-details/:sellerId" element={<SellerDetailsPage />} />
+                    <Route path="/sale-by-ogcs" element={<SaleByOGCSPage />} />
+                    <Route path="/ogcs-product-details/:id" element={<OgcsSellerDetailsPage />} />
+                    
+                    {/* Redirect unknown paths to the dashboard */}
+                    <Route path="*" element={<Navigate to="/" />} />
+                  </Routes>
+                </div>
+              </div>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </Router>
   );
 };

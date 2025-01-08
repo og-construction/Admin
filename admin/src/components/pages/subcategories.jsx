@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { baseurl } from "../config/url";
 
 const SubcategoryManagement = () => {
   const [subcategories, setSubcategories] = useState([]);
@@ -10,7 +11,7 @@ const SubcategoryManagement = () => {
   // Fetch all subcategories
   const fetchSubcategories = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/subcategory");
+      const response = await axios.get(`${baseurl}/api/subcategory`);
       setSubcategories(response.data);
     } catch (error) {
       console.error("Error fetching subcategories:", error.message);
@@ -22,7 +23,7 @@ const SubcategoryManagement = () => {
   // Fetch all categories for dropdown
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/category/get-all");
+      const response = await axios.get(`${baseurl}/api/category/get-all`);
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error.message);
@@ -43,7 +44,7 @@ const SubcategoryManagement = () => {
   // Create a new subcategory
   const createSubcategory = async () => {
     try {
-      await axios.post("http://localhost:5000/api/subcategory", {
+      await axios.post(`${baseurl}/api/subcategory`, {
         name: form.name,
         category: form.category,
       });
@@ -57,7 +58,7 @@ const SubcategoryManagement = () => {
   // Update an existing subcategory
   const updateSubcategory = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/subcategory/${form.id}`, {
+      await axios.put(`${baseurl}/api/subcategory/${form.id}`, {
         name: form.name,
         category: form.category,
       });
@@ -71,7 +72,7 @@ const SubcategoryManagement = () => {
   // Delete a subcategory
   const deleteSubcategory = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/subcategory/${id}`);
+      await axios.delete(`${baseurl}/api/subcategory/${id}`);
       fetchSubcategories();
     } catch (error) {
       console.error("Error deleting subcategory:", error.message);
@@ -156,7 +157,7 @@ const SubcategoryManagement = () => {
             <td className="border px-4 py-2">{subcategory.category.name}</td>
             <td className="border px-4 py-2">
                 <img
-                    src={`http://localhost:5000/${subcategory.image}`}
+                    src={`${baseurl}/api/${subcategory.image}`}
                     alt={subcategory.name}
                     className="h-16 w-16 object-cover"
                 />

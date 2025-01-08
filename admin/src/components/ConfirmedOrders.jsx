@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { baseurl } from "./config/url";
 
 const ConfirmedOrders = () => {
   const [confirmedOrders, setConfirmedOrders] = useState([]);
@@ -9,7 +10,7 @@ const ConfirmedOrders = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/admin/orders/confirmed"
+          `${baseurl}/api/admin/orders/confirmed`
         );
         setConfirmedOrders(response.data);
       } catch (error) {

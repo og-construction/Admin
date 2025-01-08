@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const AdminSellers = () => {
   const [sellers, setSellers] = useState([]);
@@ -7,7 +8,7 @@ const AdminSellers = () => {
   useEffect(() => {
     const fetchSellers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/admin/sellers");
+        const response = await axios.get("/admin/sellers");
         setSellers(response.data);
       } catch (error) {
         console.error("Error fetching sellers:", error.message);
@@ -20,8 +21,8 @@ const AdminSellers = () => {
   const handleBlockToggle = async (id, isBlocked) => {
     try {
       const endpoint = isBlocked
-        ? `http://localhost:5000/api/admin/sellers/${id}/unblock`
-        : `http://localhost:5000/api/admin/sellers/${id}/block`;
+        ? `${baseurl}/api/admin/sellers/${id}/unblock`
+        : `${baseurl}/api/admin/sellers/${id}/block`;
       await axios.put(endpoint);
       setSellers(
         sellers.map((seller) =>
@@ -36,7 +37,7 @@ const AdminSellers = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/admin/sellers/${id}`);
+      await axios.delete(`${baseurl}/api/admin/sellers/${id}`);
       setSellers(sellers.filter((seller) => seller._id !== id));
       alert("Seller deleted successfully!");
     } catch (error) {

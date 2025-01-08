@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { baseurl } from "./config/url";
 
 const PendingOrders = () => {
   const [pendingOrders, setPendingOrders] = useState([]);
@@ -10,7 +11,7 @@ const PendingOrders = () => {
     const fetchPendingOrders = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/admin/orders/pending"
+          `${baseurl}/api/admin/orders/pending`
         );
         setPendingOrders(response.data);
       } catch (error) {

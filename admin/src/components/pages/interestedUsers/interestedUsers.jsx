@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const InterestedUsers = () => {
   const { id } = useParams();
@@ -10,7 +11,7 @@ const InterestedUsers = () => {
     const fetchInterestedUsers = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/admin/sellers/${id}/interested-users`
+          `${baseurl}/api/admin/sellers/${id}/interested-users`
         );
         setInterestedUsers(response.data);
       } catch (error) {

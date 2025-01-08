@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
+  const [newUsersCount, setNewUsersCount] = useState(0);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users");
+        const response = await axios.get(`${baseurl}/api/users`);
         setUsers(response.data);
+
+        // Assuming the API provides a `createdAt` field for user creation date
+        const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+        const newUsers = response.data.filter((user) => 
+          user.createdAt && user.createdAt.startsWith(today)
+        );
+        setNewUsersCount(newUsers.length);
       } catch (error) {
         console.error("Error fetching users:", error.message);
       }
@@ -19,7 +28,7 @@ const AllUsers = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await axios.delete(`${baseurl}/api/users/${id}`);
       setUsers(users.filter((user) => user._id !== id));
       alert("User deleted successfully!");
     } catch (error) {
@@ -30,7 +39,7 @@ const AllUsers = () => {
   const handleBlock = async (id, isBlocked) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/users/${id}/${isBlocked ? "unblock" : "block"}`
+        `${baseurl}/api/users/${id}/${isBlocked ? "unblock" : "block"}`
       );
       setUsers(
         users.map((user) =>
@@ -45,7 +54,21 @@ const AllUsers = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">All Users</h2>
+      <h2 className="text-2xl font-bold mb-4">All Users</h2>
+
+      {/* Summary Boxes */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="bg-green-100 p-4 rounded shadow text-center">
+          <h3 className="text-lg font-semibold">New Users Today</h3>
+          <p className="text-2xl font-bold text-green-600">{newUsersCount}</p>
+        </div>
+        <div className="bg-blue-100 p-4 rounded shadow text-center">
+          <h3 className="text-lg font-semibold">Total Users</h3>
+          <p className="text-2xl font-bold text-blue-600">{users.length}</p>
+        </div>
+      </div>
+
+      {/* Users Table */}
       <table className="min-w-full border">
         <thead>
           <tr className="bg-gray-100">

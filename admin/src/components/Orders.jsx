@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { baseurl } from "./config/url";
 
 const OrderSummary = () => {
   const [summary, setSummary] = useState(null);
@@ -9,7 +10,7 @@ const OrderSummary = () => {
     const fetchOrderSummary = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/admin/order-summary"
+          `${baseurl}/api/admin/order-summary`
         );
         setSummary(response.data);
       } catch (error) {
