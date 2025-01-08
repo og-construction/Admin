@@ -654,6 +654,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
   res.status(200).json(enrichedProducts);
 });
 
+
 /*
 
 const getAllProducts = asyncHandler(async (req, res) => {
@@ -1096,26 +1097,26 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // Fetch full seller details by ID
 const getSellerDetails = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongodbId(id); // Ensure the ID is valid
+
+  // Validate MongoDB ID
+  validateMongodbId(id);
 
   try {
+    // Fetch seller details along with products
     const seller = await Seller.findById(id)
-      .select("name email mobile companyName role createdAt") // Include all required seller fields
+      .select("name email mobile address city state country pincode gstNumber Visibilitylevel paymentDate")
       .populate({
-        path: "products", // Populate products related to the seller
-        select: "name description price size quantity category image createdAt", // Include the image and any other fields you need
+        path: "products", // Assuming there's a `products` reference in the Seller model
+        select: "productName price stock category subCategory deliveryPreference saleMode",
       });
 
     if (!seller) {
       return res.status(404).json({ message: "Seller not found" });
     }
 
-    res.status(200).json(seller); // Send seller details, including products with images
+    res.status(200).json(seller);
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to retrieve seller details",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 
