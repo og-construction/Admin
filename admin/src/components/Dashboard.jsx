@@ -107,7 +107,7 @@ const Dashboard = () => {
               <td className="border border-gray-200 p-2">#12345</td>
               <td className="border border-gray-200 p-2">2025-01-06</td>
               <td className="border border-gray-200 p-2">3</td>
-              <td className="border border-gray-200 p-2">$150</td>
+              <td className="border border-gray-200 p-2">150</td>
               <td className="border border-gray-200 p-2">Pending</td>
               <td className="border border-gray-200 p-2">Unpaid</td>
               <td className="border border-gray-200 p-2 text-blue-500">View</td>

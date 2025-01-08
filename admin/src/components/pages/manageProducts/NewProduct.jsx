@@ -56,7 +56,7 @@ const NewProduct = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">New Product Page</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">Recently Added Products</h1>
 
       {/* Search Bar */}
       <div className="mb-4">

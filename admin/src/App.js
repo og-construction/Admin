@@ -26,6 +26,7 @@ import CreateProduct from "./components/pages/manageProducts/CreateProduct";
 import SellerProduct from "./components/pages/manageProducts/SellerProducts";
 import SaleBySellerPage from "./components/pages/manageProducts/SaleBySellerPage";
 import SaleByOGCSPage from "./components/pages/manageProducts/SaleByOGCSPage";
+import SellerDetailsPage from "./components/pages/manageProducts/SellerDetailsPage";
 const App = () => {
   return (
     <Router>
@@ -61,6 +62,7 @@ const App = () => {
             <Route path="/seller-products" element={<SellerProduct/>} />
             <Route path="/sale-by-seller" element={<SaleBySellerPage />} />
             <Route path="/sale-by-ogcs" element={<SaleByOGCSPage />} />
+            <Route path="/seller-details/:sellerId" element={<SellerDetailsPage />} />
 
             {/* Add other routes here */}
           </Routes>
