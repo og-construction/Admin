@@ -28,6 +28,8 @@ import SaleBySellerPage from "./components/pages/manageProducts/SaleBySellerPage
 import SaleByOGCSPage from "./components/pages/manageProducts/SaleByOGCSPage";
 import Login from "./components/admin/loginpage";
 import ProtectedRoute from "./components/protectedRoute/protectedRoute.jsx";
+import SellerDetailsPage from "./components/pages/manageProducts/SellerDetailsPage.jsx";
+import OgcsSellerDetailsPage from "./components/pages/manageProducts/OgcsSellerDetailsPage.jsx";
 
 const App = () => {
   return (
@@ -72,7 +74,10 @@ const App = () => {
                     <Route path="/products/create" element={<CreateProduct />} />
                     <Route path="/seller-products" element={<SellerProduct />} />
                     <Route path="/sale-by-seller" element={<SaleBySellerPage />} />
+                    <Route path="/seller-details/:sellerId" element={<SellerDetailsPage />} />
                     <Route path="/sale-by-ogcs" element={<SaleByOGCSPage />} />
+                    <Route path="/ogcs-product-details/:id" element={<OgcsSellerDetailsPage />} />
+                    
                     {/* Redirect unknown paths to the dashboard */}
                     <Route path="*" element={<Navigate to="/" />} />
                   </Routes>

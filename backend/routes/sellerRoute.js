@@ -34,7 +34,7 @@ const {
 const upload = require("../middlewares/multer");
 const {  getSellerSalesStats, getMonthlySales, getMonthlySalesBySeller, checkLowStock } = require("../controller/SalesController");
 const { sendInvoiceEmail } = require("../controller/sendInvoiceEmail");
-
+const { getSellerDetails } = require("../controllers/sellerController");
 // Sample controller function (replace this with your actual logic)
 /*const createseller = (req, res) => {
     res.status(201).json({ message: "Seller created" });
@@ -53,7 +53,7 @@ router.get("/all-seller", authAdminMiddleware, getAllSellers); // Require auth a
 router.get("/logout", logout);
 router.get("/refresh-token", handleRefreshToken);
 router.put("/update-seller/:id", authSellerMiddleware, updatePassword); // Update user route
-
+router.get("/seller/:id", getSellerDetails);
 //------------product route---------------
 // For seller-specific routes, only use authSellerMiddleware
 router.post(
