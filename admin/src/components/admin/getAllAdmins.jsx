@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { baseurl } from "../config/url";
 
 const ManageAdmins = () => {
   const [admins, setAdmins] = useState([]);
@@ -7,7 +8,7 @@ const ManageAdmins = () => {
   useEffect(() => {
     const fetchAdmins = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/admin/get-all-admin");
+        const response = await axios.get(`${baseurl}/api/admin/get-all-admin`);
         setAdmins(response.data);
       } catch (error) {
         console.error("Error fetching admins:", error.message);
@@ -19,7 +20,7 @@ const ManageAdmins = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/admin/delete-admin/${id}`);
+      await axios.delete(`${baseurl}/api/admin/delete-admin/${id}`);
       setAdmins(admins.filter((admin) => admin._id !== id));
       alert("Admin deleted successfully!");
     } catch (error) {
@@ -30,8 +31,8 @@ const ManageAdmins = () => {
   const handleBlockToggle = async (id, isBlocked) => {
     try {
       const endpoint = isBlocked
-        ? `http://localhost:5000/api/admin/unblock-admin/${id}`
-        : `http://localhost:5000/api/admin/block-admin/${id}`;
+        ? `${baseurl}/api/admin/unblock-admin/${id}`
+        : `${baseurl}/api/admin/block-admin/${id}`;
       await axios.put(endpoint);
       setAdmins(
         admins.map((admin) =>

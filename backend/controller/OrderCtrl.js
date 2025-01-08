@@ -328,6 +328,44 @@ const getSellerOrders = asyncHandler(async (req, res) => {
       .json({ message: "An error occurred while fetching orders." });
   }
 });
+const getAllOrders = asyncHandler(async (req, res) => {
+  console.log("getAllOrders endpoint hit");
+  try {
+    const orders = await Order.find().populate("user", "name email");
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todaysOrders = orders.filter(order => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate >= today;
+    });
+
+    const todayTotalAmount = todaysOrders.reduce(
+      (acc, order) => acc + order.totalAmount,
+      0
+    );
+
+    const overallTotalAmount = orders.reduce(
+      (acc, order) => acc + order.totalAmount,
+      0
+    );
+
+    res.status(200).json({
+      totalOrders: orders.length,
+      totalAmount: overallTotalAmount,
+      todaysOrders: todaysOrders.length,
+      todayTotalAmount,
+      orders,
+    });
+  } catch (error) {
+    console.error("Error fetching orders:", error.message);
+    res.status(500).json({
+      message: "An error occurred while fetching orders",
+      error: error.message,
+    });
+  }
+});
 
 module.exports = {
   createOrder,
@@ -335,4 +373,5 @@ module.exports = {
   getOrderById,
   updateOrderStatus,
   getSellerOrders,
+  getAllOrders,
 };

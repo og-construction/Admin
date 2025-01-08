@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { baseurl } from "../config/url";
 
 const CategoryManagement = () => {
   const [categories, setCategories] = useState([]);
@@ -8,7 +9,7 @@ const CategoryManagement = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/category/get-all");
+      const response = await axios.get(`${baseurl}/api/category/get-all`);
       console.log("Fetched Categories:", response.data); // Debug API response
       setCategories(response.data);
     } catch (error) {
@@ -29,7 +30,7 @@ const CategoryManagement = () => {
 
   const createCategory = async () => {
     try {
-      await axios.post("http://localhost:5000/api/category", { name: form.name });
+      await axios.post(`${baseurl}/api/category`, { name: form.name });
       setForm({ name: "", id: null });
       fetchCategories();
     } catch (error) {
@@ -39,7 +40,7 @@ const CategoryManagement = () => {
 
   const updateCategory = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/category/${form.id}`, { name: form.name });
+      await axios.put(`${baseurl}/api/category/${form.id}`, { name: form.name });
       setForm({ name: "", id: null });
       fetchCategories();
     } catch (error) {
@@ -49,7 +50,7 @@ const CategoryManagement = () => {
 
   const deleteCategory = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/category/${id}`);
+      await axios.delete(`${baseurl}/api/category/${id}`);
       fetchCategories();
     } catch (error) {
       console.error("Error deleting category:", error.message);

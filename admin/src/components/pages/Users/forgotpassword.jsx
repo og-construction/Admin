@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -7,7 +8,7 @@ const ForgotPassword = () => {
 
   const handleSendOtp = async () => {
     try {
-      await axios.post("http://localhost:5000/api/users/forgot-password", { email });
+      await axios.post(`${baseurl}/api/users/forgot-password`, { email });
       setOtpSent(true);
       alert("OTP sent to your email!");
     } catch (error) {

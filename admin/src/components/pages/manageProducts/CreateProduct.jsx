@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState , useEffect  } from "react";
 import { FaTrash } from "react-icons/fa";
-
+import {baseurl} from "../../config/url"
 const CreateProduct = () => {
     
     const [categories, setCategories] = useState([]);
@@ -23,10 +23,8 @@ const CreateProduct = () => {
   const [deliveryUnit, setDeliveryUnit] = useState("Days");
   const [image, setImage] = useState(null);
   const [images, setImages] = useState([]);
-
   
 
-  const baseurl = "http://localhost:5000";  
 
   // Fetch categories
   useEffect(() => {

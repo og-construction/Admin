@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { baseurl } from "./config/url";
 
 const CancelledOrders = () => {
   const [CancelledOrders, setCancelledOrders] = useState([]);
@@ -10,7 +11,7 @@ const CancelledOrders = () => {
     const fetchCancelledOrders= async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/admin/orders/cancelled"
+          `${baseurl}/api/admin/orders/cancelled`
         );
         setCancelledOrders(response.data);
       } catch (error) {

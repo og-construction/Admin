@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const ApproveProducts = () => {
   const [products, setProducts] = useState([]);
@@ -7,7 +8,7 @@ const ApproveProducts = () => {
   useEffect(() => {
     const fetchPendingProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/admin/products/pending");
+        const response = await axios.get(`${baseurl}/api/admin/products/pending`);
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching pending products:", error.message);
@@ -19,7 +20,7 @@ const ApproveProducts = () => {
 
   const handleApprove = async (id) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/products/${id}/approve`);
+      await axios.put(`${baseurl}/api/admin/products/${id}/approve`);
       setProducts(products.filter((product) => product._id !== id));
       alert("Product approved successfully!");
     } catch (error) {
