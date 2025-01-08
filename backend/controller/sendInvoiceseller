@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        width: 80%;
+        margin: auto;
+        border: 1px solid #ddd;
+        padding: 20px;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .details {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="header">Invoice</h2>
+      <p><strong>Product Name:</strong> <%= productName %></p>
+      <p><strong>Product Price:</strong> ₹<%= productPrice %></p>
+      <p><strong>Max Quantity:</strong> <%= maxQuantity %></p>
+      <% if (saleMode === "Sale By Seller") { %>
+        <p><strong>Visibility Level:</strong> <%= visibilityLevel %></p>
+        <p><strong>Visibility Charges:</strong> ₹<%= visibilityCharges %></p>
+      <% } else if (saleMode === "Sale By OGCS") { %>
+        <p><strong>Deposit Charges:</strong> ₹<%= depositCharges %></p>
+      <% } %>
+    </div>
+  </body>
+</html>

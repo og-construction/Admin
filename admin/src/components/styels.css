@@ -1,0 +1,78 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f9;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #2d3436;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px 0;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 15px;
+    cursor: pointer;
+    color: white;
+    text-align: left;
+  }
+  
+  .sidebar ul li:hover {
+    background-color: #636e72;
+  }
+  
+  .dashboard {
+    margin-left: 250px;
+    padding: 20px;
+  }
+  
+  .stats-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .stat-card {
+    flex: 1 1 calc(25% - 20px);
+    margin: 10px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .table-container {
+    margin-top: 20px;
+  }
+  
+  .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+  }
+  
+  .table-container th, .table-container td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .table-container th {
+    background-color: #2d3436;
+    color: white;
+  }
+  
+  .table-container tr:hover {
+    background-color: #f1f1f1;
+  }
+  

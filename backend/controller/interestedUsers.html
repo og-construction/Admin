@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interested Users</title>
+</head>
+<body>
+  <h1>Interested Users for Your Products</h1>
+  <p>Dear <%= sellerName %>,</p>
+  <p>Here are the users interested in your products:</p>
+  <ul>
+    <% interestedUsers.forEach((user) => { %>
+      <li>
+        User: <%= user.user.name %> (<%= user.user.email %>, <%= user.user.mobile %>) <br />
+        Product: <%= user.product.name %> - ₹<%= user.product.price %> <br />
+        Interest Date: <%= new Date(user.interestDate).toLocaleDateString() %> <br />
+        Status: <%= user.status %>
+      </li>
+    <% }); %>
+  </ul>
+</body>
+</html>
