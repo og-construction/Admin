@@ -3,11 +3,11 @@ import axios from "axios";
 import { baseurl } from "./config/url";
 
 const DeliveredOrders = () => {
-  const [DeliveredOrders, setDeliveredOrders] = useState([]);
+  const [deliveredOrders, setDeliveredOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch detailed pending orders
+    // Fetch delivered orders
     const fetchDeliveredOrders = async () => {
       try {
         const response = await axios.get(
@@ -15,7 +15,7 @@ const DeliveredOrders = () => {
         );
         setDeliveredOrders(response.data);
       } catch (error) {
-        console.error("Error fetching pending orders:", error.message);
+        console.error("Error fetching delivered orders:", error.message);
       } finally {
         setLoading(false);
       }
@@ -26,67 +26,67 @@ const DeliveredOrders = () => {
 
   if (loading) {
     return (
-      <div className="p-6 bg-gray-100 min-h-screen">
-        <h1 className="text-3xl font-bold mb-6">Delivered Orders</h1>
-        <p className="text-gray-600">Loading...</p>
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <p className="text-xl font-semibold text-green-600 animate-pulse">
+          Loading Delivered Orders...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Delivered Orders</h1>
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        {DeliveredOrders.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100 text-gray-600">
-                <tr>
-                  <th className="text-left py-3 px-4 border-b">Order ID</th>
-                  <th className="text-left py-3 px-4 border-b">User</th>
-                  <th className="text-left py-3 px-4 border-b">Seller</th>
-                  <th className="text-left py-3 px-4 border-b">Date</th>
-                  <th className="text-left py-3 px-4 border-b">Status</th>
-                  <th className="text-left py-3 px-4 border-b">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {DeliveredOrders.map((order, index) => (
-                  <tr
-                    key={index}
-                    className={`${
-                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } hover:bg-gray-100`}
-                  >
-                    <td className="py-3 px-4 border-b">{order.orderId}</td>
-                    <td className="py-3 px-4 border-b">
-                      {order.userName || "N/A"}
-                    </td>
-                    <td className="py-3 px-4 border-b">
-                      {order.sellerName || "N/A"}
-                    </td>
-                    <td className="py-3 px-4 border-b">
-                      {new Date(order.latestStatus.timestamp).toLocaleString()}
-                    </td>
-                    <td className="py-3 px-4 border-b text-yellow-600 font-medium">
-                      {order.latestStatus.status || "Pending"}
-                    </td>
-                    <td className="py-3 px-4 border-b">
-                      <button className="bg-blue-500 text-white px-3 py-1 rounded-lg mr-2 hover:bg-blue-600">
-                        Approve
-                      </button>
-                      <button className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">
-                        Cancel
-                      </button>
-                    </td>
+    <div className="min-h-screen bg-gradient-to-r from-gray-50 to-green-50 py-10 px-4 lg:px-16">
+      <div className="relative flex flex-col">
+        <div className="flex-1 p-6 bg-white rounded-lg shadow-lg">
+          <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
+            Delivered Orders
+          </h1>
+          <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+            {deliveredOrders.length > 0 ? (
+              <table className="table-auto w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-gradient-to-r from-blue-400 to-blue-500 text-white">
+                    <th className="px-6 py-4 text-left font-bold">Order ID</th>
+                    <th className="px-6 py-4 text-left font-bold">User</th>
+                    <th className="px-6 py-4 text-left font-bold">Seller</th>
+                    <th className="px-6 py-4 text-left font-bold">Date</th>
+                    <th className="px-6 py-4 text-left font-bold">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {deliveredOrders.map((order, index) => (
+                    <tr
+                      key={index}
+                      className={`${
+                        index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"
+                      } hover:bg-gray-200 transition-colors duration-300`}
+                    >
+                      <td className="px-6 py-4 text-gray-800 font-semibold">
+                        {order.orderId || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">
+                        {order.userName || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">
+                        {order.sellerName || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">
+                        {new Date(order.latestStatus.timestamp).toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4 text-blue-600 font-medium">
+                        {order.latestStatus.status || "Delivered"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="px-6 py-4 text-center text-gray-600 font-medium">
+                No delivered orders found.
+              </p>
+            )}
           </div>
-        ) : (
-          <p className="text-gray-600">No pending orders available.</p>
-        )}
+        </div>
       </div>
     </div>
   );

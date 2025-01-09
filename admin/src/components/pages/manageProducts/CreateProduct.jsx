@@ -110,8 +110,13 @@ const CreateProduct = () => {
     if (image) formData.append("mainImage", image);
 
     try {
-      const response = await axios.post(`${baseurl}/api/products`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+
+      const response = await axios.post(`${baseurl}/api/seller/sell-product`, formData, {
+        headers: { "Content-Type": "multipart/form-data",
+"Authorization": `Bearer ${token}`
+
+         },
       });
       if (response.status === 201) alert("Product created successfully!");
     } catch (error) {

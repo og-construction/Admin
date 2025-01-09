@@ -55,7 +55,7 @@ const Dashboard = () => {
         `${baseurl}/api/admin/interested-users`,
         config
       );
-
+  const fetProducts = axios.get(`${baseurl}/api/product`)
       // Execute API calls
       try {
         // Orders API
@@ -84,7 +84,16 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error fetching order summary:", error);
       }
-    
+    try {
+      const productResponse = await fetProducts;
+      setDashboardData((prevData) => ({
+        ...prevData,
+        totalProduct:productResponse.data.totalProducts,
+        }))
+    } catch (error) {
+      console.error("Error fetching Product:", error);
+
+    }
       try {
         // Users API
         const usersResponse = await fetchUsers;
@@ -264,7 +273,18 @@ const Dashboard = () => {
           </h2>
           <p className="text-gray-500 mt-2">Delivered Orders</p>
         </div>
+<div className="p-4 bg-white shadow rounded-lg text-center border border-gray-200">
+    <div className="flex justify-center text-blue-600 mb-3">
+      <div>
+        <h2 className="text-2xl font-bold text-blue-600">
+          {dashboardData.totalProduct}
 
+        </h2>
+        <p className="text-gray-500 mt-2">Total Products</p>
+      </div>
+
+    </div>
+</div>
         {/* Other cards */}
         <div className="p-4 bg-white shadow rounded-lg text-center border border-gray-200">
           <div className="flex justify-center text-blue-600 mb-3">
