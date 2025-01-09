@@ -91,7 +91,6 @@ const getAllProduct = asyncHandler(async (req, res) => {
       (match) => `$${match}`
     );
     const finalQuery = JSON.parse(queryStr);
-    finalQuery.approved = true;
 
     // Find products
     const products = await Product.find(finalQuery).populate("image"); // Populate the image details
@@ -111,13 +110,39 @@ const getAllProduct = asyncHandler(async (req, res) => {
           }
         : null,
     }));
+  // Return the products along with the total count
+  res.status(200).json({
+    totalProducts: products.length, // Total number of products
+    products: response, // Transformed product data
+  });
+} catch (error) {
+  console.error("Error fetching products:", error);
+  res.status(500).json({ message: "Error fetching products" });
+}
+});
 
-    res.status(200).json(response);
+const getProductCounts = asyncHandler(async (req, res) => {
+  try {
+    const totalProducts = await Product.countDocuments();
+    const approvedProducts = await Product.countDocuments({ approved: true }); // Count approved products
+    const recentlyAddedProducts = await Product.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("name createdAt");
+    const unapprovedProducts = await Product.countDocuments({ approved: false });
+
+    res.status(200).json({
+      totalProducts,
+      approvedProducts, // Include in response
+      recentlyAddedProducts,
+      unapprovedProducts,
+    });
   } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).json({ message: "not getting product" });
+    console.error("Error fetching product counts:", error);
+    res.status(500).json({ message: "Failed to fetch product counts" });
   }
 });
+
 
 // Shuffle array utility function
 const shuffleArray = (array) => {
@@ -239,4 +264,5 @@ module.exports = {
   getVisibleProducts,
   addToWishlist,
   rating,
+  getProductCounts  
 };

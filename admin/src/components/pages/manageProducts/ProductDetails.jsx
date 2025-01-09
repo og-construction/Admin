@@ -1,109 +1,163 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Simulated fetch function
   useEffect(() => {
-    // Mock API data for products
-    const products = [
-      {
-        id: 1,
-        name: "CEMENT",
-        price: "400 Per Number",
-        stock: "352 Units",
-        category: "Hand Tools",
-        subCategory: "Manual Hand Tool",
-        deliveryPreference: "30 days",
-        seller: {
-          name: "Akash Pawar",
-          email: "akashpawarkali@gmail.com",
-          mobile: "9686875595",
-        },
-        image: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Ambuja_cement.jpg",
-        paymentDate: "04 Jan 2025",
-      },
-      {
-        id: 2,
-        name: "Hammer",
-        price: "500 Per Number",
-        stock: "120 Units",
-        category: "Hand Tools",
-        subCategory: "Manual Hand Tool",
-        deliveryPreference: "15 days",
-        seller: {
-          name: "John Doe",
-          email: "john.doe@example.com",
-          mobile: "9876543210",
-        },
-        image: "https://upload.wikimedia.org/wikipedia/commons/6/62/Hammer.jpg",
-        paymentDate: "03 Jan 2025",
-      },
-    ];
-
-    // Find the product by ID
-      // Simulate an API call
-      setTimeout(() => {
-        const product = products.find((p) => p.id === parseInt(id));
-        setProduct(product);
+    const fetchProductDetails = async () => {
+      try {
+        const { data } = await axios.get(`${baseurl}/api/seller/product-details/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        console.log(data); // Debugging: Check product structure
+        setProduct(data);
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+      } finally {
         setLoading(false);
-      }, 1000); // Simulated delay
-    }, [id]);
-  
-    if (loading) {
-      return (
-        <div className="min-h-screen bg-gray-100 p-8">
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">Product Details</h1>
-          <p className="text-lg text-blue-500">Loading...</p>
-        </div>
-      );
-    }
-  
-    if (!product) {
-      return (
-        <div className="min-h-screen bg-gray-100 p-8">
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">Product Details</h1>
-          <p className="text-lg text-red-500">Product not found.</p>
-        </div>
-      );
-    }
-  
+      }
+    };
+
+    fetchProductDetails();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <p className="text-xl font-semibold text-blue-600 animate-pulse">
+          Loading product details...
+        </p>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <p className="text-xl font-semibold text-red-600">Product not found.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Product Details</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* seller Details Section */}
-        <div className="bg-green-200 p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold text-green-700 mb-2">Seller Details</h2>
-          <p><strong>Seller Name:</strong> {product.seller.name || "N/A"}</p>
-          <p><strong>Email:</strong> {product.seller.email || "N/A"}</p>
-          <p><strong>Mobile:</strong> {product.seller.mobile || "N/A"}</p>
-          <p><strong>Payment Date:</strong> {product.paymentDate || "N/A"}</p>
+    <div className="min-h-screen bg-white py-10 px-4 lg:px-16">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8">{product.name}</h1>
+      <div className="bg-gray-100 p-6 rounded-lg shadow-lg space-y-4">
+        <p className="text-lg text-gray-700">
+          <strong>Description:</strong> {product.description || "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Price:</strong> {product.price} ({product.priceUnit})
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Stock:</strong> {product.stock}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Category:</strong> {product.category?.name || product.category || "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Subcategory:</strong> {product.subcategory?.name || product.subcategory || "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Size:</strong> {product.size || "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Sold:</strong> {product.sold}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Min Quantity:</strong> {product.minquantity || "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Max Quantity:</strong> {product.maxquantity || "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>HSN Code:</strong> {product.hsnCode || "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>GST Number:</strong> {product.gstNumber || "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Visibility Level:</strong> {product.visibilityLevel || "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Delivery Preference:</strong>{" "}
+          {product.deliveryPreference
+            ? `${product.deliveryPreference.duration} ${product.deliveryPreference.unit}`
+            : "N/A"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>PowerPack Visibility:</strong>{" "}
+          {product.PowerPackVisibility ? "Yes" : "No"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Sale Type:</strong> {product.saleType || "N/A"}
+        </p>
+        <div className="text-lg text-gray-700">
+          <strong>Specifications:</strong>
+          <ul className="list-disc pl-5">
+            {product.specifications?.length > 0
+              ? product.specifications.map((spec, index) => (
+                  <li key={index}>
+                    {spec.key}: {spec.value}
+                  </li>
+                ))
+              : "N/A"}
+          </ul>
         </div>
-
-        {/* Product Details Section */}
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold text-gray-700 mb-2">Product Information</h2>
-          <p><strong>Product Name:</strong> {product.name}</p>
-          <p><strong>Price:</strong> {product.price}</p>
-          <p><strong>Stock:</strong> {product.stock}</p>
-          <p><strong>Category:</strong> {product.category}</p>
-          <p><strong>Sub Category:</strong> {product.subCategory}</p>
-          <p><strong>Delivery Preference:</strong> {product.deliveryPreference}</p>
-          <p><strong>Sale Mode:</strong> {product.saleMode}</p>
+        <div className="text-lg text-gray-700">
+          <strong>Images:</strong>
+          <ul className="list-disc pl-5">
+            {product.images?.length > 0
+              ? product.images.map((image, index) => (
+                  <li key={index}>{image.$oid}</li>
+                ))
+              : "N/A"}
+          </ul>
         </div>
+        <p className="text-lg text-gray-700">
+  <strong>Seller:</strong>{" "}
+  {product.seller
+    ? `${product.seller.name} (${product.seller.email})`
+    : "N/A"}
+</p>
 
-        {/* Product Image */}
-        {/* <div className="col-span-1 lg:col-span-2 flex justify-center">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-80 h-80 object-contain rounded-lg shadow-md"
-          />
-        </div> */}
+        <p className="text-lg text-gray-700">
+          <strong>Approved:</strong> {product.approved ? "Yes" : "No"}
+        </p>
+        <p className="text-lg text-gray-700">
+          <strong>Visibility Payment:</strong>{" "}
+          {product.visibilityPayment ? "Yes" : "No"}
+        </p>
+        <div className="text-lg text-gray-700">
+  <strong>Images:</strong>
+  <div className="grid grid-cols-2 gap-4">
+    {product.images?.length > 0 ? (
+      product.images.map((image, index) => (
+        <div key={index} className="w-full max-w-sm">
+          {image.data ? (
+            <img
+              src={`data:${image.contentType};base64,${image.data}`}
+              alt={image.filename || `Image ${index + 1}`}
+              className="w-full rounded-lg shadow-md"
+            />
+          ) : (
+            <p className="text-gray-500">Image data not available</p>
+          )}
+        </div>
+      ))
+    ) : (
+      <p className="text-gray-500">No images available</p>
+    )}
+  </div>
+</div>
+
       </div>
     </div>
   );

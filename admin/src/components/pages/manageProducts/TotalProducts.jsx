@@ -1,150 +1,96 @@
-import React, { useState } from "react";
-import { FaEye } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { baseurl } from "../../config/url";
 
 const TotalProducts = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Sample data for the table (replace with dynamic data if needed)
-  const initialProducts = [
-    {
-      id: 1,
-      name: "CEMENT",
-      price: "400.00",
-      maxQuantity: 50,
-      minQuantity: 10,
-      stock: 100,
-      category: "Hand Tools",
-      seller: "Akash Pawar",
-      date: "2025-01-04",
-    },
-    {
-      id: 2,
-      name: "Hammer",
-      price: "500.00",
-      maxQuantity: 30,
-      minQuantity: 5,
-      stock: 50,
-      category: "Hand Tools",
-      seller: "Akash Pawar",
-      date: "2025-01-03",
-    },
-    {
-      id: 3,
-      name: "Drill Machine",
-      price: "800.00",
-      maxQuantity: 20,
-      minQuantity: 5,
-      stock: 10,
-      category: "Power Tools",
-      seller: "Sanika Kashid",
-      date: "2025-01-02",
-    },
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get(`${baseurl}/api/product`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setProducts(Array.isArray(data) ? data : data.products || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const [products, setProducts] = useState(initialProducts);
-  const [search, setSearch] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+    fetchProducts();
+  }, []);
 
-  // Filter products based on search query and date range
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch =
-      product.id.toString().includes(search) ||
-      product.name.toLowerCase().includes(search.toLowerCase()) ||
-      product.seller.toLowerCase().includes(search.toLowerCase()) ||
-      product.category.toLowerCase().includes(search.toLowerCase());
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <p className="text-xl font-semibold text-blue-600 animate-pulse">
+          Loading products...
+        </p>
+      </div>
+    );
+  }
 
-    const withinDateRange =
-      (!startDate || new Date(product.date) >= new Date(startDate)) &&
-      (!endDate || new Date(product.date) <= new Date(endDate));
-
-    return matchesSearch && withinDateRange;
-  });
+  if (!Array.isArray(products) || products.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <p className="text-xl font-semibold text-red-600">No products available.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Total Products Page</h1>
-
-      {/* Search Bar */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search by Product Id, Name, Seller, or Category..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      {/* Date Filters */}
-      <div className="flex space-x-4 mb-4">
-        <div>
-          <label className="block text-gray-600 mb-1">Select Date</label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        {/* <div>
-          <label className="block text-gray-600 mb-1">End Date</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div> */}
-      </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="table-auto w-full bg-white rounded-lg shadow-lg">
+    <div className="min-h-screen bg-gradient-to-r from-gray-50 to-blue-50 py-10 px-4 lg:px-16">
+      <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
+        Product Inventory
+      </h1>
+      <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
+        <table className="table-auto w-full text-sm border-collapse">
           <thead>
-            <tr className="bg-gray-200 text-gray-700">
-              <th className="px-4 py-2 text-left">Product Id</th>
-              <th className="px-4 py-2 text-left">Product Name</th>
-              <th className="px-4 py-2 text-left">Category</th>
-              <th className="px-4 py-2 text-left">Seller</th>
-              <th className="px-4 py-2 text-left">Price</th>
-              <th className="px-4 py-2 text-left">Max Quantity</th>
-              <th className="px-4 py-2 text-left">Min Quantity</th>
-              <th className="px-4 py-2 text-left">Stock</th>
-              <th className="px-4 py-2 text-left">Purchased Date</th>
-              <th className="px-4 py-2 text-center">Actions</th>
+            <tr className="bg-gradient-to-r from-blue-400 to-blue-500 text-white">
+              <th className="px-6 py-4 text-left font-bold">SL</th>
+              <th className="px-6 py-4 text-left font-bold">Product Name</th>
+              <th className="px-6 py-4 text-left font-bold">Price</th>
+              <th className="px-6 py-4 text-left font-bold">Stock</th>
+              <th className="px-6 py-4 text-center font-bold">Action</th>
             </tr>
           </thead>
           <tbody>
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <tr key={product.id} className="border-b">
-                  <td className="px-4 py-2">{product.id}</td>
-                  <td className="px-4 py-2">{product.name}</td>
-                  <td className="px-4 py-2">{product.category}</td>
-                  <td className="px-4 py-2">{product.seller}</td>
-                  <td className="px-4 py-2">{product.price}</td>
-                  <td className="px-4 py-2">{product.maxQuantity}</td>
-                  <td className="px-4 py-2">{product.minQuantity}</td>
-                  <td className="px-4 py-2">{product.stock}</td>
-                  <td className="px-4 py-2">{product.date}</td>
-                  <td className="px-4 py-2 text-center">
-                    {/* Action Icon */}
-                    <FaEye
-                      className="text-blue-500 cursor-pointer hover:text-blue-700"
-                      onClick={() => navigate(`/products/details/${product.id}`)}
-                    />
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="10" className="px-4 py-2 text-center text-gray-500">
-                  No products found
+            {products.map((product, index) => (
+              <tr
+                key={product._id}
+                className={`${
+                  index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"
+                } hover:bg-gray-200 transition-colors duration-300`}
+              >
+                <td className="px-6 py-4 text-center text-gray-700 font-medium">
+                  {index + 1}
+                </td>
+                <td className="px-6 py-4 text-gray-800 font-semibold">
+                  {product.name}
+                </td>
+                <td className="px-6 py-4 text-gray-700 font-medium">
+                  {product.price}
+                </td>
+                <td className="px-6 py-4 text-gray-700 font-medium">
+                  {product.stock}
+                </td>
+                <td className="px-6 py-4 text-center">
+                  <button
+                    onClick={() => navigate(`/product/${product._id}`)}
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-1 px-4 rounded-lg hover:from-blue-600 hover:to-blue-700 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 transition-transform duration-300 transform hover:scale-105"
+                  >
+                    View
+                  </button>
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>

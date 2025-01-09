@@ -16,7 +16,6 @@ const {
   getAllProducts,
   CreateProduct,
   updateSeller,
-  createProductWithVisibility,
   updateProductVisibility,
   getSimilarProducts,
   getProductDetails,
@@ -25,6 +24,8 @@ const {
   getInterestedUsers,
   removeInterestedUser,
   getProductWithIncompletePayments,
+  getSellerDetails,
+  getProductDetailsAdmin,
 } = require("../controller/sellerCtrl");
 const {
   isAdmin,
@@ -34,7 +35,6 @@ const {
 const upload = require("../middlewares/multer");
 const {  getSellerSalesStats, getMonthlySales, getMonthlySalesBySeller, checkLowStock } = require("../controller/SalesController");
 const { sendInvoiceEmail } = require("../controller/sendInvoiceEmail");
-const { getSellerDetails } = require("../controllers/sellerController");
 // Sample controller function (replace this with your actual logic)
 /*const createseller = (req, res) => {
     res.status(201).json({ message: "Seller created" });
@@ -72,6 +72,7 @@ router.put(
 );
 router.delete("/delete-product/:id", authSellerMiddleware, deleteProduct);
 router.get("/details/:id", getProductDetails);
+router.get('/product-details/:id',getProductDetailsAdmin)
 router.get("/products/box2", getProductsForBox2);
 
 router.put(
@@ -98,12 +99,7 @@ router.get("/seller-by-id/:id", getSellerDetailsById);
 router.put("/update-seller/:id", authAdminMiddleware, updatePassword);
 router.delete("/delete-seller/:id", authAdminMiddleware, deleteSeller);
 
-// Visibility Route
-router.post(
-  "/create-visibility-product",
-  authSellerMiddleware,
-  createProductWithVisibility
-);
+
 router.put(
   "/update--visibility-product",
   authSellerMiddleware,

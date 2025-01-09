@@ -30,6 +30,7 @@ import Login from "./components/admin/loginpage";
 import ProtectedRoute from "./components/protectedRoute/protectedRoute.jsx";
 import SellerDetailsPage from "./components/pages/manageProducts/SellerDetailsPage.jsx";
 import OgcsSellerDetailsPage from "./components/pages/manageProducts/OgcsSellerDetailsPage.jsx";
+import ApproveProductsPage from "./components/pages/manageProducts/NotApprovedProducts";
 
 const App = () => {
   return (
@@ -69,7 +70,7 @@ const App = () => {
                     <Route path="/products/new" element={<NewProduct />} />
                     <Route path="/products/total" element={<TotalProducts />} />
                     <Route path="/products/approved" element={<ApprovedProducts />} />
-                    <Route path="/products/not-approved" element={<NotApprovedProducts />} />
+                    <Route path="/waiting-for-approval" element={<ApproveProductsPage />} />
                     <Route path="/products/details/:id" element={<ProductDetails />} />
                     <Route path="/products/create" element={<CreateProduct />} />
                     <Route path="/seller-products" element={<SellerProduct />} />
@@ -77,7 +78,8 @@ const App = () => {
                     <Route path="/seller-details/:sellerId" element={<SellerDetailsPage />} />
                     <Route path="/sale-by-ogcs" element={<SaleByOGCSPage />} />
                     <Route path="/ogcs-product-details/:id" element={<OgcsSellerDetailsPage />} />
-                    
+                    <Route path="/product/:id" element={<ProductDetails />} />
+
                     {/* Redirect unknown paths to the dashboard */}
                     <Route path="*" element={<Navigate to="/" />} />
                   </Routes>

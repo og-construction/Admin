@@ -450,8 +450,6 @@ const CreateProduct = asyncHandler(async (req, res) => {
     maxquantity,
     stock,
     unit, // Add unit to the request body
-    HSNCODE,
-    PGCST,
     specifications,
     category,
     subcategory,
@@ -464,6 +462,7 @@ const CreateProduct = asyncHandler(async (req, res) => {
     deliveryPreference,
 
   } = req.body;
+  
   const sellerId = req.seller?._id;
   if (
     !name ||
@@ -948,86 +947,7 @@ const getProductsForBox2 = asyncHandler(async (req, res) => {
   }
 });
 
-//--------------------------------visibility Logic----------------
-const calculateVisibility = (level) => {
-  // Define visibility percentages for each level
-  const visibilityPercentages = {
-    "1X": 10,
-    "2X": 20,
-    "3X": 30,
-    "4X": 40,
-  };
-  // Normalize level to uppercase to handle case mismatches
-  const normalizedLevel = level.toUpperCase();
-  // Check if level is valid
-  if (!visibilityPercentages[level]) {
-    throw new Error(
-      "Invalid visibility level. Choose from '1X', '2X', '3X', or '4X'."
-    );
-  }
 
-  // Calculate visibility score based on the level
-  return visibilityPercentages[level];
-};
-const createProductWithVisibility = asyncHandler(async (req, res) => {
-  const {
-    name,
-    description,
-    price,
-    size,
-    specifications = [],
-    category,
-    subcategory,
-    visibilityLevel = "1X",
-    videoPriority = false,
-  } = req.body;
-  const sellerId = req.seller?._id;
-
-  if (
-    !name ||
-    !price ||
-    !size ||
-    !quantity ||
-    !category ||
-    !subcategory ||
-    !sellerId
-  ) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  try {
-    const image = req.file
-      ? `/uploads/images/${req.file.filename}`
-      : req.body.image;
-    if (!image) {
-      return res.status(400).json({ message: "Image is required" });
-    }
-
-    const newProduct = new Product({
-      name,
-      description,
-      price,
-      size,
-      quantity,
-      seller: sellerId,
-      category,
-      subcategory, // Store subcategory ID
-      specifications,
-      visibilityLevel: visibilityLevel.toUpperCase(),
-      //videoPriority: visibilityLevel === '3X' && videoPriority, // Set video priority only if 3X is selected
-      image,
-    });
-
-    await newProduct.save();
-    res.status(201).json({
-      message: "Product created successfully with visibility level",
-      product: newProduct,
-    });
-  } catch (error) {
-    console.error("Error creating product:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
 
 // Update Product Visibility
 const updateProductVisibility = asyncHandler(async (req, res) => {
@@ -1143,6 +1063,26 @@ const getProductDetails = asyncHandler(async (req, res) => {
     isAdmin,
   });
 });
+
+const getProductDetailsAdmin = asyncHandler(async (req, res) => {
+  const productId = req.params.id;
+  const product = await Product.findById(productId)
+    .populate("seller", "name email companyName")
+    .populate("category", "name")
+    .populate("subcategory", "name")
+    .populate({
+      path: "images",
+      select: "filename contentType data", // Include the `data` field
+    });
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+
+  res.status(200).json(product);
+});
+
+
+
 
 // Fetch all approved products
 const getApprovedProducts = asyncHandler(async (req, res) => {
@@ -1746,7 +1686,6 @@ module.exports = {
   getProductDetails,
   approveProduct,
   getApprovedProducts,
-  createProductWithVisibility,
   updateProductVisibility,
   getSimilarProducts,
   getProductsForBox2,
@@ -1755,4 +1694,5 @@ module.exports = {
   getInterestedUsers,
   removeInterestedUser,
   getAllInterestedUsersForAdmin,
+  getProductDetailsAdmin,
 };
