@@ -13,6 +13,7 @@ import {
   ShoppingBag,
   People,
   Logout,
+  AccountBox,
 } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -66,7 +67,6 @@ const Sidebar = () => {
       icon: <People />,
       subMenu: [
         { name: "All Admins", path: "/admins/all" },
-        { name: "Create Admin", path: "/admins/create" },
       ],
     },
     {
@@ -87,6 +87,14 @@ const Sidebar = () => {
         { name: "New Sellers", path: "/sellers/new" },
       ],
     },
+    {
+      name:"Accounts",
+      icon: <AccountBox />,
+      subMenu: [
+        { name: "Seller payments", path: "/accounts/seller" },
+        { name: "user order payments", path: "/accounts/user/order" },
+  ]
+},
     { name: "Locations", path: "/locations", icon: <LocalShipping /> },
     { name: "Sale By Sellers", path: "/salebysellers", icon: <LocalShipping /> },
     { name: "POS", path: "/pos", icon: <Storefront /> },

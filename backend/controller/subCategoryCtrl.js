@@ -6,65 +6,74 @@ const validateMongodbId = require('../utils/validateMongodbId');
 // Create Subcategory
 // subcategoryController.js
 const createSubcategory = asyncHandler(async (req, res) => {
-    const { name, category } = req.body;
-  
-    if (!name || !category) {
-      res.status(400);
-      throw new Error('Name and category are required');
+  const { name, category } = req.body;
+
+  console.log("Request Body:", req.body);
+  console.log("Uploaded File:", req.file);
+
+  if (!name || !category) {
+    res.status(400);
+    throw new Error("Name and category are required");
+  }
+
+  try {
+    const imageFile = req.file;
+
+    if (!imageFile) {
+      return res.status(400).json({ message: "Image file is required" });
     }
-  
-    try {
-      const imageFile = req.file;
-      if (!imageFile) {
-        return res.status(400).json({ message: 'Image file is required' });
-      }
-  
-      const newSubcategory = await SubCategory.create({
-        name,
-        category,
-        image: imageFile.id, // Store the file ID from GridFS
-      });
-  
-      res.status(201).json(newSubcategory);
-    } catch (error) {
-      res.status(500).json({
-        message: 'Failed to create subcategory',
-        error: error.message,
-      });
-    }
-  });
-  
+
+    const newSubcategory = await SubCategory.create({
+      name,
+      category,
+      image: `/uploads/images/${imageFile.filename}`, // Use the correct file path
+    });
+
+    res.status(201).json(newSubcategory);
+  } catch (error) {
+    console.error("Error creating subcategory:", error.message);
+    res.status(500).json({
+      message: "Failed to create subcategory",
+      error: error.message,
+    });
+  }
+});
+
 // Update Subcategory
 const updateSubcategory = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    validateMongodbId(id);
-  
-    try {
+  const { id } = req.params;
+
+  console.log("Incoming Update Request ID:", id);
+  console.log("Request Body:", req.body);
+  console.log("Uploaded File:", req.file);
+
+  validateMongodbId(id);
+
+  try {
       const updatedData = { ...req.body };
       if (req.file) {
-        updatedData.image = req.file.id; // Update image reference
+          updatedData.image = `/uploads/images/${req.file.filename}`;
       }
-  
+
       const updatedSubcategory = await SubCategory.findByIdAndUpdate(
-        id,
-        updatedData,
-        { new: true }
+          id,
+          updatedData,
+          { new: true } // Return the updated document
       );
-  
+
       if (!updatedSubcategory) {
-        res.status(404);
-        throw new Error('Subcategory not found');
+          res.status(404).json({ message: "Subcategory not found" });
+          return;
       }
-  
+
+      console.log("Updated Subcategory:", updatedSubcategory);
       res.json(updatedSubcategory);
-    } catch (error) {
-      res.status(500).json({
-        message: 'Failed to update subcategory',
-        error: error.message,
-      });
-    }
-  });
-  
+  } catch (error) {
+      console.error("Error updating subcategory:", error.message);
+      res.status(500).json({ message: "Failed to update subcategory" });
+  }
+});
+
 // Delete Subcategory
 const deleteSubcategory = asyncHandler(async (req, res) => {
     const { id } = req.params;

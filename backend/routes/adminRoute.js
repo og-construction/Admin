@@ -1,5 +1,5 @@
 const express = require('express');
-const { countLoggedInUsers, createAdmin, loginAdmin, getAllAdmin, getaAdmin, deleteAdmin, blockAdmin, unblockAdmin, verifyOtp, updatePassword, resetPassword, handleRefreshToken, generateRefreshToken, getSellerMetrics, getEarningsData } = require('../controller/adminCtrl');
+const { countLoggedInUsers, createAdmin, loginAdmin, getAllAdmin, getaAdmin, deleteAdmin, blockAdmin, unblockAdmin, verifyOtp, updatePassword, resetPassword, handleRefreshToken, generateRefreshToken, getSellerMetrics, getEarningsData, updateAdmin } = require('../controller/adminCtrl');
 const upload = require('../middlewares/multer');
 
 const {
@@ -27,8 +27,8 @@ router.post('/create-admin',createAdmin)//-----------create admin
 router.post('/login',loginAdmin)//---------------login
 router.get('/get-all-admin',getAllAdmin)
 router.get('/get-admin/:id',getaAdmin)
-router.put('/update-admin',updateUser)
-router.delete('/delete-admin',deleteAdmin)
+router.put('/update-admin/:id',updateAdmin)
+router.delete('/delete-admin/:id',deleteAdmin)
 router.put('/block-admin/:id',blockAdmin);
 router.put('/unblock-admin/:id',unblockAdmin);
 router.post('/verify-otp',verifyOtp)

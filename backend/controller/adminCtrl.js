@@ -19,44 +19,40 @@ const countLoggedInUsers = asyncHandler(async (req, res) => {
 const createAdmin = asyncHandler(async (req, res) => {
     const { name, email, password, mobile, role } = req.body;
 
+    // Validate required fields
     if (!name || !email || !mobile || !password || !role) {
         res.status(400);
         throw new Error('Please fill in all fields');
     }
 
+    // Check if the admin already exists
     const findAdmin = await Admin.findOne({ email });
     if (findAdmin) {
         res.status(400);
         throw new Error('Admin already exists');
     }
 
+    // Create the new admin
     const newAdmin = new Admin({ name, email, mobile, password, role });
 
-    // Generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    newAdmin.verificationOtp = otp;
-    newAdmin.verificationExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
-
     try {
+        // Save the admin without OTP and email logic
         await newAdmin.save();
-        // Send OTP email
-        const data = {
-            to: email,
-            subject: "Verify your email",
-            text: `Your OTP is ${otp}`,
-            html: `<p>Your OTP is <strong>${otp}</strong>. It is valid for 10 minutes.</p>`,
-        };
-        await sendEmail(data);
-    
+
         res.status(201).json({
-            message: "User registered successfully. Please verify your email and mobile.",
-            id: newAdmin._id,
+            message: "Admin created successfully.",
+            admin: {
+                id: newAdmin._id,
+                name: newAdmin.name,
+                email: newAdmin.email,
+                mobile: newAdmin.mobile,
+                role: newAdmin.role,
+            },
         });
     } catch (error) {
         console.error("Error details:", error); // Log the exact error message
         throw new Error('Could not save admin');
     }
-    
 });
 
 // otp verification function
