@@ -25,52 +25,67 @@ const ConfirmedOrders = () => {
 
   if (loading) {
     return (
-      <div className="p-6 bg-gray-100 min-h-screen">
-        <h1 className="text-3xl font-bold mb-6">Confirmed Orders</h1>
-        <p className="text-gray-600">Loading...</p>
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <p className="text-xl font-semibold text-blue-600 animate-pulse">
+          Loading Confirmed Orders...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Confirmed Orders</h1>
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        {confirmedOrders.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100 text-gray-600">
-                <tr>
-                  <th className="text-left py-3 px-4 border-b">Order ID</th>
-                  <th className="text-left py-3 px-4 border-b">User</th>
-                  <th className="text-left py-3 px-4 border-b">Seller</th>
-                  <th className="text-left py-3 px-4 border-b">Status</th>
-                  <th className="text-left py-3 px-4 border-b">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {confirmedOrders.map((order, index) => (
-                  <tr
-                    key={index}
-                    className={`${
-                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } hover:bg-gray-100`}
-                  >
-                    <td className="py-3 px-4 border-b">{order.orderId || "N/A"}</td>
-                    <td className="py-3 px-4 border-b">{order.userName}</td>
-                    <td className="py-3 px-4 border-b">{order.sellerName}</td>
-                    <td className="py-3 px-4 border-b">{order.latestStatus.status}</td>
-                    <td className="py-3 px-4 border-b">
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </td>
+    <div className="min-h-screen bg-gradient-to-r from-gray-50 to-blue-50 py-10 px-4 lg:px-16">
+      <div className="relative flex flex-col">
+        <div className="flex-1 p-6 bg-white rounded-lg shadow-lg">
+          <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
+            Confirmed Orders
+          </h1>
+          <div className="overflow-x-auto bg-white rounded-lg shadow-md">
+            {confirmedOrders.length > 0 ? (
+              <table className="table-auto w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-gradient-to-r from-blue-400 to-blue-500 text-white">
+                    <th className="px-6 py-4 text-left font-bold">Order ID</th>
+                    <th className="px-6 py-4 text-left font-bold">User</th>
+                    <th className="px-6 py-4 text-left font-bold">Seller</th>
+                    <th className="px-6 py-4 text-left font-bold">Status</th>
+                    <th className="px-6 py-4 text-left font-bold">Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {confirmedOrders.map((order, index) => (
+                    <tr
+                      key={index}
+                      className={`${
+                        index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"
+                      } hover:bg-gray-200 transition-colors duration-300`}
+                    >
+                      <td className="px-6 py-4 text-gray-800 font-semibold">
+                        {order.orderId || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">
+                        {order.userName || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">
+                        {order.sellerName || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 text-blue-600 font-medium">
+                        {order.latestStatus.status || "Confirmed"}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">
+                        {new Date(order.createdAt).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="px-6 py-4 text-center text-gray-600 font-medium">
+                No confirmed orders found.
+              </p>
+            )}
           </div>
-        ) : (
-          <p className="text-gray-600">No confirmed orders available.</p>
-        )}
+        </div>
       </div>
     </div>
   );

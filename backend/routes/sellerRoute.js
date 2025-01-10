@@ -16,7 +16,6 @@ const {
   getAllProducts,
   CreateProduct,
   updateSeller,
-  createProductWithVisibility,
   updateProductVisibility,
   getSimilarProducts,
   getProductDetails,
@@ -25,6 +24,8 @@ const {
   getInterestedUsers,
   removeInterestedUser,
   getProductWithIncompletePayments,
+  getSellerDetails,
+  getProductDetailsAdmin,
 } = require("../controller/sellerCtrl");
 const {
   isAdmin,
@@ -71,6 +72,7 @@ router.put(
 );
 router.delete("/delete-product/:id", authSellerMiddleware, deleteProduct);
 router.get("/details/:id", getProductDetails);
+router.get('/product-details/:id',getProductDetailsAdmin)
 router.get("/products/box2", getProductsForBox2);
 
 router.put(
@@ -97,12 +99,7 @@ router.get("/seller-by-id/:id", getSellerDetailsById);
 router.put("/update-seller/:id", authAdminMiddleware, updatePassword);
 router.delete("/delete-seller/:id", authAdminMiddleware, deleteSeller);
 
-// Visibility Route
-router.post(
-  "/create-visibility-product",
-  authSellerMiddleware,
-  createProductWithVisibility
-);
+
 router.put(
   "/update--visibility-product",
   authSellerMiddleware,

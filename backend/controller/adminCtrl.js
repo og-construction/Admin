@@ -7,6 +7,9 @@ const sendEmail = require("./emailCtrl");
 const {generateToken} = require('../config/jwtToken')
 const {generateRefreshToken } = require("../config/refreshtoken");
 const validateMongodbId = require('../utils/validateMongodbId')
+const Product = require("../models/productModel"); // Correct path to Product model
+const SellerPayment = require("../models/sellerPaymentModel");
+const SellerProductVisibility = require("../models/SellerProductvisibilityModel");
 
 const countLoggedInUsers = asyncHandler(async (req, res) => {
     const count = await User.countDocuments({ lastLogin: { $exists: true } }); // Adjust query based on your needs
@@ -301,6 +304,71 @@ const resetPassword = asyncHandler(async(req, res) => {
 })
 
 
+const getSellerMetrics = asyncHandler(async (req, res) => {
+    try {
+        const totalSellers = await Seller.countDocuments();
+        const totalProductsBySellers = await Product.countDocuments({ role: 'Sale By Seller' });
+        const totalProductsByOGCS = await Product.countDocuments({ role: 'Sale By OGCS' });
+
+        res.status(200).json({
+            totalSellers,
+            totalProductsBySellers,
+            totalProductsByOGCS,
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching seller metrics", error: error.message });
+    }
+});
+
+
+// Controller for fetching earnings data
+const getEarningsData = async (req, res) => {
+    try {
+      // Fetch visibility, power pack, and deposit amounts from SellerProductVisibility
+      const visibilityData = await SellerProductVisibility.aggregate([
+        { $unwind: "$products" },
+        {
+          $group: {
+            _id: null,
+            visibilityAmount: { $sum: "$products.visibilityAmount" },
+            powerPackAmount: { $sum: "$products.powerPackAmount" },
+            depositAmount: { $sum: "$products.totalProductAmount" },
+          },
+        },
+      ]);
+  
+      const visibilityAmount = visibilityData[0]?.visibilityAmount || 0;
+      const powerPackAmount = visibilityData[0]?.powerPackAmount || 0;
+      const depositAmount = visibilityData[0]?.depositAmount || 0;
+  
+      // Fetch registration amount and total earnings from SellerPayment
+      const paymentData = await SellerPayment.aggregate([
+        {
+          $group: {
+            _id: null,
+            registrationAmount: { $sum: "$amount" },
+          },
+        },
+      ]);
+  
+      const registrationAmount = paymentData[0]?.registrationAmount || 0;
+  
+      // Total earnings calculation
+      const totalEarnings =
+        visibilityAmount + powerPackAmount + depositAmount + registrationAmount;
+  
+      res.status(200).json({
+        visibilityAmount,
+        powerPackAmount,
+        depositAmount,
+        registrationAmount,
+        totalEarnings,
+      });
+    } catch (error) {
+      console.error("Error fetching earnings data:", error);
+      res.status(500).json({ error: "An error occurred while fetching data." });
+    }
+  };
 
 module.exports = { 
     
@@ -312,6 +380,7 @@ module.exports = {
     getAllAdmin,getaAdmin,
     forgotPasswordToken,resetPassword,
     updateAdmin,updatePassword,
-    verifyOtp,handleRefreshToken,generateRefreshToken
-   
+    verifyOtp,handleRefreshToken,generateRefreshToken,
+    getSellerMetrics,
+    getEarningsData 
 };
