@@ -29,37 +29,29 @@ const SellerProductsPage = () => {
         setLoading(false);
       }
     };
-  
+
     fetchUnapprovedProducts();
   }, []);
-  
-  const handleApproveProduct = async (productId) => {
+
+  const handleViewProduct = async (productId) => {
     try {
-      await axios.put(
-        `${baseurl}/api/admin/approve-product/${productId}`,
-        {},
+      const response = await axios.get(
+        `${baseurl}/api/admin/payment-details/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-      setProducts((prevProducts) =>
-        prevProducts.filter((product) => product._id !== productId)
-      );
-      alert("Product approved successfully!");
-      setSelectedProduct(null);
-    } catch (err) {
-      alert(err.response ? err.response.data.message : "Error approving product");
-    }
-  };
 
-  const handleViewProduct = async (productId) => {
-    try {
-      const response = await axios.get(`${baseurl}/api/seller/product-details/${productId}`);
-      setSelectedProduct(response.data);
+      setSelectedProduct({
+        productDetails: response.data?.productDetails || {},
+        otherPayment: response.data?.otherPayment || null,
+        paymentDetails: response.data?.paymentDetails || null,
+      });
     } catch (err) {
-      alert(err.response ? err.response.data.message : "Error fetching product details");
+      console.error("Error fetching product details:", err);
+      alert(err.response?.data?.message || "Failed to fetch product details.");
     }
   };
 
@@ -67,7 +59,6 @@ const SellerProductsPage = () => {
     setSelectedProduct(null);
   };
 
-  
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-50 to-blue-50 py-10 px-4 lg:px-16">
       <div className="relative flex">
@@ -102,7 +93,9 @@ const SellerProductsPage = () => {
                       <td className="px-6 py-4 text-gray-800 font-semibold">
                         {product.name}
                       </td>
-                      <td className="px-6 py-4 text-gray-700">{product.maxquantity}</td>
+                      <td className="px-6 py-4 text-gray-700">
+                        {product.maxquantity}
+                      </td>
                       <td className="px-6 py-4 text-gray-700">₹{product.price}</td>
                       <td className="px-6 py-4 text-center">
                         <button
@@ -131,88 +124,91 @@ const SellerProductsPage = () => {
 
         {/* Sidebar for Product Details */}
         {selectedProduct && (
-          <div className="fixed right-0 top-0 h-full w-96 bg-white rounded-lg shadow-lg p-6 overflow-y-auto">
-            <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"
-              onClick={closeSidebar}
-            >
-              &times;
-            </button>
-            <h2 className="text-3xl font-bold text-gray-800 mb-6">
-              {selectedProduct.name}
-            </h2>
-            <div className="space-y-4 text-gray-700">
-              <p>
-                <span className="font-semibold text-blue-600">Description:</span>{" "}
-                {selectedProduct.description || "No description available"}
-              </p>
-              <p>
-                <span className="font-semibold text-blue-600">Price:</span> ₹
-                {selectedProduct.price} ({selectedProduct.priceUnit || "per unit"})
-              </p>
-              <p>
-                <span className="font-semibold text-blue-600">Max Quantity:</span>{" "}
-                {selectedProduct.maxquantity || "N/A"}
-              </p>
-              <p>
-                <span className="font-semibold text-blue-600">Category:</span>{" "}
-                {selectedProduct.category?.name || "Uncategorized"}
-              </p>
-              <p className="text-gray-700">
-        <span className="font-semibold text-blue-600">Subcategory:</span> {selectedProduct.subcategory?.name || "Not specified"}
-      </p>
-      <p className="text-gray-700">
-        <span className="font-semibold text-blue-600">Size:</span> {selectedProduct.size || "Standard"}
-      </p>
-      <p className="text-gray-700">
-        <span className="font-semibold text-blue-600">Sold Units:</span> {selectedProduct.sold || 0}
-      </p>
-      <p className="text-gray-700">
-        <span className="font-semibold text-blue-600">HSN Code:</span> {selectedProduct.hsnCode || "Not available"}
-      </p>
-      <p className="text-gray-700">
-        <span className="font-semibold text-blue-600">Available Stock:</span> {selectedProduct.stock || "Out of stock"}
-      </p>
+  <div className="fixed right-0 top-0 h-full w-96 bg-white shadow-xl border-l border-gray-200 rounded-l-lg p-6 overflow-y-auto transition-transform transform translate-x-0">
+    {/* Close Button */}
+    <button
+      className="absolute top-4 right-4 text-gray-400 hover:text-black text-2xl focus:outline-none"
+      onClick={closeSidebar}
+    >
+      &times;
+    </button>
 
-              <div>
-                <span className="font-semibold text-blue-600">Specifications:</span>
-                <ul className="list-disc list-inside">
-                  {selectedProduct.specifications?.length > 0 ? (
-                    selectedProduct.specifications.map((spec, index) => (
-                      <li key={index}>
-                        <span className="font-semibold">{spec.key}:</span> {spec.value}
-                      </li>
-                    ))
-                  ) : (
-                    <li>No specifications listed</li>
-                  )}
-                </ul>
-              </div>
-              <p className="text-gray-700">
-        <span className="font-semibold text-green-600">👨‍💼 Seller Information:</span> {selectedProduct.seller?.name || "Not available"}
-      </p>
-              <div>
-        <p className="font-semibold text-green-600">🖼️ Product Images:</p>
-        <div className="grid grid-cols-1 gap-2">
-          {selectedProduct.images?.length > 0 ? (
-            selectedProduct.images.map((image, index) => (
-              <div key={index} className="w-full h-40 bg-gray-100 rounded-lg shadow-md overflow-hidden">
-                <img
-                  src={`data:${image.contentType};base64,${image.data}`}
-                  alt={`Product Image ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No images available</p>
-          )}
+    {/* Header */}
+    <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">
+      {selectedProduct.productDetails?.name || "Product Name"}
+    </h2>
+
+    {/* Product Details */}
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold text-blue-600">Product Details</h3>
+        <div className="text-sm text-gray-700 mt-2">
+          <p><span className="font-medium">Description:</span> {selectedProduct.productDetails?.description || "N/A"}</p>
+          <p><span className="font-medium">Price:</span> ₹{selectedProduct.productDetails?.price || "N/A"}</p>
+          <p><span className="font-medium">Max Quantity:</span> {selectedProduct.productDetails?.maxquantity || "N/A"}</p>
+          <p><span className="font-medium">Min Quantity:</span> {selectedProduct.productDetails?.minquantity || "N/A"}</p>
+          <p><span className="font-medium">Stock:</span> {selectedProduct.productDetails?.stock || "N/A"}</p>
+          <p><span className="font-medium">Category:</span> {selectedProduct.productDetails?.category || "N/A"}</p>
+          <p><span className="font-medium">Subcategory:</span> {selectedProduct.productDetails?.subcategory || "N/A"}</p>
+          <p><span className="font-medium">GST Number:</span> {selectedProduct.productDetails?.gstNumber || "N/A"}</p>
+          <p><span className="font-medium">HSN Code:</span> {selectedProduct.productDetails?.hsnCode || "N/A"}</p>
         </div>
       </div>
-              
-            </div>
+
+      {/* Seller Details */}
+      <div>
+        <h3 className="text-lg font-semibold text-green-600">Seller Details</h3>
+        <div className="text-sm text-gray-700 mt-2">
+          <p><span className="font-medium">Name:</span> {selectedProduct.productDetails?.seller?.name || "N/A"}</p>
+          <p><span className="font-medium">Email:</span> {selectedProduct.productDetails?.seller?.email || "N/A"}</p>
+          <p><span className="font-medium">Mobile:</span> {selectedProduct.productDetails?.seller?.mobile || "N/A"}</p>
+          <p><span className="font-medium">Address:</span> {selectedProduct.productDetails?.seller?.address?.street || "N/A"}, {selectedProduct.productDetails?.seller?.address?.city || "N/A"}, {selectedProduct.productDetails?.seller?.address?.state || "N/A"}, {selectedProduct.productDetails?.seller?.address?.country || "N/A"} - {selectedProduct.productDetails?.seller?.address?.postalCode || "N/A"}</p>
+        </div>
+      </div>
+
+      {/* Other Payment Details */}
+      {selectedProduct.otherPayment && (
+        <div>
+          <h3 className="text-lg font-semibold text-yellow-600">Other Payment</h3>
+          <div className="text-sm text-gray-700 mt-2">
+            <p><span className="font-medium">Method:</span> {selectedProduct.otherPayment.method}</p>
+            <p><span className="font-medium">Amount:</span> ₹{selectedProduct.otherPayment.amount}</p>
+            <p><span className="font-medium">Date:</span> {new Date(selectedProduct.otherPayment.date).toLocaleDateString()}</p>
+            <p><span className="font-medium">Bank Name:</span> {selectedProduct.otherPayment.bankName}</p>
+            <p><span className="font-medium">Account Number:</span> {selectedProduct.otherPayment.accountNumber}</p>
+            <p><span className="font-medium">IFSC Code:</span> {selectedProduct.otherPayment.ifscCode}</p>
+            <p><span className="font-medium">Transaction Id:</span>
+            {selectedProduct.otherPayment.transactionId}</p>
+
           </div>
-        )}
+        </div>
+      )}
+
+      {/* Payment Details */}
+      <div>
+        <h3 className="text-lg font-semibold text-purple-600">Payment Details</h3>
+        <div className="text-sm text-gray-700 mt-2">
+          {selectedProduct.paymentDetails?.products.map((product, index) => (
+            <div key={index} className="mb-4 border-b pb-2">
+              <p><span className="font-medium">Product ID:</span> {product.productId || "N/A"}</p>
+              <p><span className="font-medium">Product Name:</span> {product.productName || "N/A"}</p>
+              <p><span className="font-medium">Visibility Level:</span> {product.visibilityLevel || "N/A"}</p>
+              <p><span className="font-medium">Visibility Amount:</span> ₹{product.visibilityAmount || "N/A"}</p>
+              <p><span className="font-medium">Power Pack:</span> {product.powerPack ? "Yes" : "No"}</p>
+              <p><span className="font-medium">Power Pack Amount:</span> ₹{product.powerPackAmount || "N/A"}</p>
+              <p><span className="font-medium">Total Product Amount:</span> ₹{product.totalProductAmount || "N/A"}</p>
+            </div>
+          ))}
+          <p><span className="font-medium">Total Amount:</span> ₹{selectedProduct.paymentDetails?.totalAmount || "N/A"}</p>
+          <p><span className="font-medium">Payment Status:</span> {selectedProduct.paymentDetails?.paymentStatus || "N/A"}</p>
+          <p><span className="font-medium">Razorpay Order ID:</span> {selectedProduct.paymentDetails?.razorpayOrderId || "N/A"}</p>
+          <p><span className="font-medium">Razorpay Payment ID:</span> {selectedProduct.paymentDetails?.razorpayPaymentId || "N/A"}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       </div>
     </div>
   );

@@ -91,7 +91,8 @@ const Sidebar = () => {
       name:"Accounts",
       icon: <AccountBox />,
       subMenu: [
-        { name: "Seller payments", path: "/accounts/seller" },
+        { name: "Seller Product Payments", path: "/accounts/seller" },
+        { name: "Seller Registration Payments ", path: "/accounts/seller/registration" },
         { name: "user order payments", path: "/accounts/user/order" },
   ]
 },

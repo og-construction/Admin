@@ -10,6 +10,14 @@ const validateMongodbId = require('../utils/validateMongodbId')
 const Product = require("../models/productModel"); // Correct path to Product model
 const SellerPayment = require("../models/sellerPaymentModel");
 const SellerProductVisibility = require("../models/SellerProductvisibilityModel");
+const OtherPayment = require('../models/otherpayment');
+const otherpayment = require("../models/otherpayment");
+
+const ProductPayment = require("../models/productpaymentmodel")
+
+
+
+
 
 const countLoggedInUsers = asyncHandler(async (req, res) => {
     const count = await User.countDocuments({ lastLogin: { $exists: true } }); // Adjust query based on your needs
@@ -366,6 +374,247 @@ const getEarningsData = async (req, res) => {
     }
   };
 
+
+//------------------------seller payment details for product-------------------
+const getSellerPaymentAndProductDetails = asyncHandler(async (req, res) => {
+    const { productId } = req.params; // Extract product ID from request parameters
+  
+    try {
+        // Step 1: Validate product ID
+        if (!productId) {
+            return res.status(400).json({ message: "Product ID is required" });
+        }
+  
+        // Step 2: Find the product details
+        const product = await Product.findById(productId)
+            .populate("image") // Populate product image details
+            .populate("category", "name") // Populate category name
+            .populate("subcategory", "name") // Populate subcategory name
+            .populate("seller", "name email mobile companyName address"); // Populate seller details
+  
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+  
+        // Step 3: Fetch SellerProductVisibility details for the product
+        const visibilityDetails = await SellerProductVisibility.findOne({
+            "products.productId": productId,
+        }).populate("products.productId", "name description price"); // Populate product details within visibility
+  
+        // Step 4: Fetch OtherPayment details for the product
+        const otherPayments = await otherpayment.findOne({
+            "productIds": productId,
+        });
+  
+        // Step 5: Structure the response
+        const response = {
+            productDetails: {
+                id: product._id,
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                maxquantity: product.maxquantity,
+                minquantity: product.minquantity,
+                stock: product.stock,
+                gstNumber: product.gstNumber,
+                hsnCode: product.hsnCode,
+                category: product.category?.name || "Unknown",
+                subcategory: product.subcategory?.name || "Unknown",
+                seller: {
+                    id: product.seller?._id,
+                    name: product.seller?.name,
+                    email: product.seller?.email,
+                    mobile: product.seller?.mobile,
+                    companyName: product.seller?.companyName,
+                    address: product.seller?.address,
+                },
+            },
+            otherPayment: otherPayments
+                ? {
+                    method: otherPayments.method,
+                    amount: otherPayments.amount,
+                    date: otherPayments.date,
+                    bankName: otherPayments.bankName,
+                    transactionId: otherPayments.transactionId,
+                    ifscCode: otherPayments.ifscCode,
+                    accountNumber: otherPayments.accountNumber,
+                    productIds: otherPayments.productIds,
+                    sellerId: otherPayments.sellerId,
+                }
+                : null,
+            paymentDetails: visibilityDetails
+                ? {
+                    sellerId: visibilityDetails.sellerId,
+                    products: visibilityDetails.products.map((p) => ({
+                        productId: p.productId?._id,
+                        productName: p.productId?.name,
+                        visibilityLevel: p.visibilityLevel,
+                        visibilityAmount: p.visibilityAmount,
+                        powerPack: p.powerPack,
+                        powerPackAmount: p.powerPackAmount,
+                        totalProductAmount: p.totalProductAmount,
+                    })),
+                    totalAmount: visibilityDetails.totalAmount,
+                    paymentStatus: visibilityDetails.paymentStatus,
+                    razorpayOrderId: visibilityDetails.razorpayOrderId,
+                    razorpayPaymentId: visibilityDetails.razorpayPaymentId,
+                    razorpaySignature: visibilityDetails.razorpaySignature,
+                }
+                : null,
+        };
+  
+        // Step 6: Send the response
+        res.status(200).json(response);
+    } catch (error) {
+        console.error("Error fetching seller payment and product details:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+});
+
+//------------------seller registration payment------------------
+
+const getSellerDetailsWithPayments = asyncHandler(async (req, res) => {
+    const { sellerId } = req.params; // Get seller ID from request parameters
+
+    try {
+        // Validate seller ID
+        if (!sellerId) {
+            return res.status(400).json({ message: "Seller ID is required" });
+        }
+
+        // Step 1: Fetch seller details
+        const seller = await Seller.findById(sellerId)
+            .populate("products") // Populate products linked to the seller
+            .exec();
+
+        if (!seller) {
+            return res.status(404).json({ message: "Seller not found" });
+        }
+
+        // Step 2: Fetch payment details for the seller
+        const payments = await SellerPayment.find({ sellerId }).exec();
+
+        // Step 3: Structure the response
+        const response = {
+            sellerDetails: {
+                id: seller._id,
+                name: seller.name,
+                email: seller.email,
+                mobile: seller.mobile,
+                companyName: seller.companyName,
+                gstNumber: seller.gstNumber,
+                pan: seller.pan,
+                role: seller.role,
+                address: seller.address,
+                isVerified: seller.isVerified,
+                isBlocked: seller.isBlocked,
+                createdAt: seller.createdAt,
+                updatedAt: seller.updatedAt,
+                products: seller.products || [],
+            },
+            paymentDetails: payments.map(payment => ({
+                id: payment._id,
+                orderCreationId: payment.orderCreationId,
+                razorpayPaymentId: payment.razorpayPaymentId,
+                razorpayOrderId: payment.razorpayOrderId,
+                razorpaySignature: payment.razorpaySignature,
+                amount: payment.amount,
+                currency: payment.currency,
+                createdAt: payment.createdAt,
+            })),
+        };
+
+        // Step 4: Send the response
+        res.status(200).json(response);
+    } catch (error) {
+        console.error("Error fetching seller details with payments:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+});
+
+
+const getDetailsByProductId = asyncHandler(async (req, res) => {
+    const { productId } = req.params;
+  
+    try {
+      if (!productId) {
+        return res.status(400).json({ message: "Product ID is required" });
+      }
+  
+      // Fetch product details
+      const product = await Product.findById(productId)
+        .populate("seller", "name email mobile companyName address")
+        .exec();
+  
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+  
+      console.log("Product Details:", product);
+  
+      // Fetch payment details
+      const payment = await ProductPayment.findOne({ cartId: productId }).exec();
+      console.log("Payment Details:", payment);
+  
+      let user = null;
+      if (payment) {
+        // Fetch user details if payment exists
+        user = await User.findById(payment.userId)
+          .select("name email mobile address")
+          .exec();
+        console.log("User Details:", user);
+      }
+  
+      // Structure the response
+      const response = {
+        productDetails: {
+          id: product._id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          category: product.category,
+          stock: product.stock,
+        },
+        sellerDetails: {
+          id: product.seller?._id || null,
+          name: product.seller?.name || null,
+          email: product.seller?.email || null,
+          mobile: product.seller?.mobile || null,
+          companyName: product.seller?.companyName || null,
+          address: product.seller?.address || null,
+        },
+        userDetails: user
+          ? {
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              mobile: user.mobile,
+              address: user.address,
+            }
+          : null,
+        paymentDetails: payment
+          ? {
+              id: payment._id,
+              orderCreationId: payment.orderCreationId,
+              razorpayOrderId: payment.razorpayOrderId,
+              razorpayPaymentId: payment.razorpayPaymentId,
+              razorpaySignature: payment.razorpaySignature,
+              createdAt: payment.createdAt,
+            }
+          : null,
+      };
+  
+      console.log("Final Response:", response);
+  
+      // Send the response
+      res.status(200).json(response);
+    } catch (error) {
+      console.error("Error fetching details by product ID:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+  
+
 module.exports = { 
     
     countLoggedInUsers, 
@@ -378,5 +627,8 @@ module.exports = {
     updateAdmin,updatePassword,
     verifyOtp,handleRefreshToken,generateRefreshToken,
     getSellerMetrics,
-    getEarningsData 
+    getEarningsData,
+    getSellerPaymentAndProductDetails,
+    getSellerDetailsWithPayments,
+    getDetailsByProductId
 };

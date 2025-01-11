@@ -1,5 +1,5 @@
 const express = require('express');
-const { countLoggedInUsers, createAdmin, loginAdmin, getAllAdmin, getaAdmin, deleteAdmin, blockAdmin, unblockAdmin, verifyOtp, updatePassword, resetPassword, handleRefreshToken, generateRefreshToken, getSellerMetrics, getEarningsData, updateAdmin } = require('../controller/adminCtrl');
+const { countLoggedInUsers, createAdmin, loginAdmin, getAllAdmin, getaAdmin, deleteAdmin, blockAdmin, unblockAdmin, verifyOtp, updatePassword, resetPassword, handleRefreshToken, generateRefreshToken, getSellerMetrics, getEarningsData, updateAdmin, getSellerPaymentAndProductDetails, getSellerDetailsWithPayments, getDetailsByProductId } = require('../controller/adminCtrl');
 const upload = require('../middlewares/multer');
 
 const {
@@ -52,8 +52,11 @@ router.put('/update-product/:id',authAdminMiddleware,upload.single('file'),updat
 router.delete('/delete-product/:id', authAdminMiddleware, deleteProduct);
 
 
+//--------------get seller details product details and payment details ------------
+router.get('/payment-details/:productId', getSellerPaymentAndProductDetails);
 
-
+router.get('/registration/payment/:sellerId',getSellerDetailsWithPayments)
+router.get("/details/:productId", getDetailsByProductId)
 
 //------------order status----------------------
 router.get('/order-summary', getOrderSummary); // Get order summary by status
