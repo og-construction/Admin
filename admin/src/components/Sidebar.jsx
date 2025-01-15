@@ -96,6 +96,28 @@ const Sidebar = () => {
         { name: "user order payments", path: "/accounts/user/order" },
   ]
 },
+{
+name:"All Datas",
+icon:<datalistBox/>,
+subMenu: [
+  {name: "Users", path: "/all-Users" },
+  {name: "Addresses", path: "/address" },
+  {name: "Admin", path: "/admin" },
+  {name: "carts", path: "/carts" },
+  {name: "categories", path: "/Categories" },
+  {name: "SubCategories", path: "/sub-categories" },
+  {name: "Delivery Charges", path: "/delivery-charges" },
+  {name: "Interested Users", path: "/Interested-users" },
+  {name: "Multiple Payments", path: "/multiple-payments" },
+  {name: "Order Tracking", path: "/order-tracking" },
+  {name: "Seller Payments Product", path: "/seller-product-payments" },
+  {name: "User Order Payments", path: "/user-payments" },
+  {name: "Sellers", path: "/sellers" },
+  {name: "wishlist", path: "/wishlist" },
+],
+  
+  
+},
     { name: "Locations", path: "/locations", icon: <LocalShipping /> },
     { name: "Sale By Sellers", path: "/salebysellers", icon: <LocalShipping /> },
     { name: "POS", path: "/pos", icon: <Storefront /> },
