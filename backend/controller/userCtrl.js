@@ -141,23 +141,7 @@ const verifyOtp = asyncHandler(async (req, res) => {
   });
 });
 
-//user details sk
-const getUserDetailsById = asyncHandler(async (req, res) => {
-  const { id } = req.params; // Extract user ID from request parameters
-  validateMongodbId(id); // Validate MongoDB ID format
 
-  try {
-    const user = await User.findById(id).select("-password");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error("Error fetching user details:", error.message);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
-  }
-});
 
       
 
@@ -294,6 +278,18 @@ const deleteUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "User deleted successfully" });
 });
 
+//detailsUser sk
+const detailsUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  validateMongodbId(userId);
+  const user = await User.findById(userId).select("-password");
+  if (!user) return res.status(404).json({ message: "User not found"
+    });
+    res.status(200).json({ user });
+    });
+
+
+
 //block user
 const blockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -330,6 +326,8 @@ const unblockUser = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+
 // ----------------password reset/update--------------------------
 const updatePassword = asyncHandler(async (req, res) => {
   // Password reset/update
@@ -469,6 +467,39 @@ exports.getUserProfile = async (req, res) => {
     res.status(500).json({ message: "Error fetching user profile", error });
   }
 };
+//user details sk
+const getUserDetailsById = asyncHandler(async (req, res) => {
+  const { id } = req.params; // Extract user ID from request parameters
+  validateMongodbId(id); // Validate MongoDB ID format
+
+  try {
+    const user = await User.findById(id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user details:", error.message);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+//sk
+//fetchUserDetails
+const getUserDetails = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${baseurl}/api/admin/user/details/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log("API Response:", response.data); // Debugging response
+    setUser(response.data);
+  } catch (error) {
+    console.error("Error fetching user details:", error.message);
+  }
+};
+
 
 module.exports = {
   createUser,
@@ -480,11 +511,13 @@ module.exports = {
   deleteUser,
   blockUser,
   unblockUser,
+  detailsUser,
   handleRefreshToken,
   logout,
   updatePassword,
   forgotPasswordToken,
   resetPassword,
   sendVerificationEmail,
-  getUserDetailsById
+  getUserDetailsById,
+  getUserDetails
 };

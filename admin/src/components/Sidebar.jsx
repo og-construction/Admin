@@ -75,7 +75,7 @@ const Sidebar = () => {
       subMenu: [
         { name: "All Users", path: "/users/all" },
         { name: "Create User", path: "/users/create" },
-        { name: "New Users", path: "/users/new" },
+        // { name: "New Users", path: "/users/new" },
       ],
     },
     {
@@ -84,7 +84,7 @@ const Sidebar = () => {
       subMenu: [
         { name: "All Sellers", path: "/sellers/all" },
         { name: "Create Seller", path: "/sellers/create" },
-        { name: "New Sellers", path: "/sellers/new" },
+        // { name: "New Sellers", path: "/sellers/new" },
       ],
     },
     { name: "Locations", path: "/locations", icon: <LocalShipping /> },
