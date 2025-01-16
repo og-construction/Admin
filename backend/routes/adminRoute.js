@@ -8,6 +8,8 @@ const {
     deleteUser,
     blockUser,
     unblockUser,
+    getUserDetailsById,
+    getUserDetails,
 } = require('../controller/userCtrl'); // Import the user controller functions
 const {  isAdmin, authUserMiddleware, authAdminMiddleware } = require('../middlewares/authMiddleware');
 const { approveProduct, deleteSeller, blockSeller, unblockSeller, getSellerDetails, getProductsBySubcategoryId, deleteProduct, updateProduct, getAllInterestedUsersForAdmin } = require('../controller/sellerCtrl');
@@ -17,10 +19,12 @@ const { getAllOrders } = require('../controller/OrderCtrl');
 const router = express.Router();
 
 // Define the routes
+router.get('/user/details',getUserDetails)
 router.get('/user/all-users',getAllUsers); // Get all users
 router.put('/user/update/:id',authAdminMiddleware,  updateUser); // Update user
 router.delete('/user/delete/:id', authAdminMiddleware,deleteUser); // Delete user
 router.put('/user/block/:id', authAdminMiddleware, blockUser); // Block user
+router.get('/user/details/:id', authAdminMiddleware,  getUserDetailsById); //sk
 router.put('/user/unblock/:id', authAdminMiddleware, unblockUser); // Unblock user
 router.get('/totalUsers', countLoggedInUsers); // Count logged-in users
 router.post('/create-admin',createAdmin)//-----------create admin

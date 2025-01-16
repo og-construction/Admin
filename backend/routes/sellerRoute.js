@@ -53,7 +53,7 @@ router.get("/all-seller", authAdminMiddleware, getAllSellers); // Require auth a
 router.get("/logout", logout);
 router.get("/refresh-token", handleRefreshToken);
 router.put("/update-seller/:id", authSellerMiddleware, updatePassword); // Update user route
-router.get("/seller/:id", getSellerDetails);
+router.get("/seller/:id", getSellerDetailsById);
 //------------product route---------------
 // For seller-specific routes, only use authSellerMiddleware
 router.post(

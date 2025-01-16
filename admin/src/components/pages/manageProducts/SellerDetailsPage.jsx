@@ -14,7 +14,7 @@ const SellerDetailsPage = () => { // Component name starts with an uppercase let
     const fetchSeller = async () => {
       try {
         const sellerId = localStorage.getItem("sellerId");
-        const response = await axios.get(`${baseurl}seller/${sellerId}`); // Replace with your API endpoint
+        const response = await axios.get(`${baseurl}seller/${sellerId}`);  
         setSeller(response.data);
       } catch (err) {
         setError(err.response ? err.response.data.message : "Error fetching seller details");

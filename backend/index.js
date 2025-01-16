@@ -9,7 +9,7 @@ const productRoute = require("./routes/productRoute");
 const CategoryRoute = require("./routes/CategoryRoute");
 const SubCategoryRoute = require("./routes/SubCategoryRoute.js");
 const role = require("./routes/roleRoute");
-const seller = require("./routes/sellerRoute");
+const sellerRoutes = require("./routes/sellerRoute");
 const OrderRoute = require("./routes/OrderRoute");
 const cart = require("./routes/CartRoute");
 const payment = require("./routes/paymentRoute");
@@ -25,8 +25,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const socket = require("./socket.js");
-const addressRoute = require("./routes/addressRoute.js");
-const sellerRoutes = require("./routes/sellerRoute"); //sk
+const addressRoute = require("./routes/addressRoute.js"); //sk
 const otherpayment = require("./routes/otherpayment.js");
 const app = express();
 const server = http.createServer(app);
@@ -98,6 +97,7 @@ app.get("/image/:id", async (req, res) => {
 });
 
 // Middleware configuration
+app.use("/api", sellerRoutes);
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
