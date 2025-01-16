@@ -1,5 +1,5 @@
 const express = require('express');
-const { countLoggedInUsers, createAdmin, loginAdmin, getAllAdmin, getaAdmin, deleteAdmin, blockAdmin, unblockAdmin, verifyOtp, updatePassword, resetPassword, handleRefreshToken, generateRefreshToken, getSellerMetrics, getEarningsData } = require('../controller/adminCtrl');
+const { countLoggedInUsers, createAdmin, loginAdmin, getAllAdmin, getaAdmin, deleteAdmin, blockAdmin, unblockAdmin, verifyOtp, updatePassword, resetPassword, handleRefreshToken, generateRefreshToken, getSellerMetrics, getEarningsData, updateAdmin, getSellerPaymentAndProductDetails, getSellerDetailsWithPayments, getDetailsByProductId } = require('../controller/adminCtrl');
 const upload = require('../middlewares/multer');
 
 const {
@@ -31,8 +31,8 @@ router.post('/create-admin',createAdmin)//-----------create admin
 router.post('/login',loginAdmin)//---------------login
 router.get('/get-all-admin',getAllAdmin)
 router.get('/get-admin/:id',getaAdmin)
-router.put('/update-admin',updateUser)
-router.delete('/delete-admin',deleteAdmin)
+router.put('/update-admin/:id',updateAdmin)
+router.delete('/delete-admin/:id',deleteAdmin)
 router.put('/block-admin/:id',blockAdmin);
 router.put('/unblock-admin/:id',unblockAdmin);
 router.post('/verify-otp',verifyOtp)
@@ -56,8 +56,11 @@ router.put('/update-product/:id',authAdminMiddleware,upload.single('file'),updat
 router.delete('/delete-product/:id', authAdminMiddleware, deleteProduct);
 
 
+//--------------get seller details product details and payment details ------------
+router.get('/payment-details/:productId', getSellerPaymentAndProductDetails);
 
-
+router.get('/registration/payment/:sellerId',getSellerDetailsWithPayments)
+router.get("/details/:productId", getDetailsByProductId)
 
 //------------order status----------------------
 router.get('/order-summary', getOrderSummary); // Get order summary by status

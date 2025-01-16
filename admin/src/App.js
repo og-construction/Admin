@@ -34,6 +34,8 @@ import ApproveProductsPage from "./components/pages/manageProducts/NotApprovedPr
 import UserDetails from "./components/pages/Users/UserDetails.jsx";
 // import AdminSellers from "./components/pages/Sellers/allSellers.jsx";
 import AllSellers from "./components/pages/Sellers/allSellers.jsx";
+import AdminSellers from "./components/pages/Sellers/allSellers.jsx";
+import SellerProductsPage from "./components/account/sellerPayment.jsx";
 
 const App = () => {
   return (
@@ -82,11 +84,16 @@ const App = () => {
                     <Route path="/sale-by-ogcs" element={<SaleByOGCSPage />} />
                     <Route path="/ogcs-product-details/:id" element={<OgcsSellerDetailsPage />} />
                     <Route path="/product/:id" element={<ProductDetails />} />
+
                     <Route path="/user/:id" element={<UserDetails />} />
                     <Route path="/sellers/all" element={<AllSellers />} />
 
+
+                    <Route path="/sellers/all" element={<AdminSellers />} />
+                    <Route path="/accounts/seller" element={<SellerProductsPage />} />
+
                     {/* Redirect unknown paths to the dashboard */}
-                    <Route path="*" element={<Navigate to="/" />} />
+                    <Route path="*" element={<Navigate to="/accounts/seller" />} />
                   </Routes>
                 </div>
               </div>
