@@ -21,11 +21,8 @@ router.put('/rating', authUserMiddleware, rating); // No admin check here
 router.post("/", authSellerMiddleware, createProduct);
 router.get("/counts", getProductCounts); // No ID is required
 
-router.get("/:id", (req, res, next) => {
-    validateMongodbId(req.params.id);
-    next();
-  }, getProduct);
-  router.get('/', getAllProduct);
+router.get("/:id",  getProduct);
+router.get('/', getAllProduct);
 router.put('/:id', authUserMiddleware, updateProduct);
 router.delete('/:id', authUserMiddleware,  deleteProduct);
 

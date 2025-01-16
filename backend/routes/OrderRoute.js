@@ -9,11 +9,12 @@ const {
 const {
   authUserMiddleware,
   authSellerMiddleware,
+  authAdminMiddleware,
 } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 router.post("/create-order", authUserMiddleware, createOrder);
-router.get("/get-user-order/:id", authUserMiddleware, getUserOrders); //get all orders for user
+router.get("/get-user-order/:id",authAdminMiddleware, getUserOrders); //get all orders for user
 
 // Ensure this is in your orderRoutes.js file
 router.get("/seller-order", authSellerMiddleware, getSellerOrders);

@@ -31,6 +31,9 @@ import ProtectedRoute from "./components/protectedRoute/protectedRoute.jsx";
 import SellerDetailsPage from "./components/pages/manageProducts/SellerDetailsPage.jsx";
 import OgcsSellerDetailsPage from "./components/pages/manageProducts/OgcsSellerDetailsPage.jsx";
 import ApproveProductsPage from "./components/pages/manageProducts/NotApprovedProducts";
+import UserDetails from "./components/pages/Users/UserDetails.jsx";
+// import AdminSellers from "./components/pages/Sellers/allSellers.jsx";
+import AllSellers from "./components/pages/Sellers/allSellers.jsx";
 import AdminSellers from "./components/pages/Sellers/allSellers.jsx";
 import SellerProductsPage from "./components/account/sellerPayment.jsx";
 import AllUsersPage from "./components/data/user.jsx";
@@ -94,6 +97,11 @@ const App = () => {
                     <Route path="/sale-by-ogcs" element={<SaleByOGCSPage />} />
                     <Route path="/ogcs-product-details/:id" element={<OgcsSellerDetailsPage />} />
                     <Route path="/product/:id" element={<ProductDetails />} />
+
+                    <Route path="/user/:id" element={<UserDetails />} />
+                    <Route path="/sellers/all" element={<AllSellers />} />
+
+
                     <Route path="/sellers/all" element={<AdminSellers />} />
                     <Route path="/accounts/seller" element={<SellerProductsPage />} />
                    <Route path='/all-Users' element={<AllUsersPage/>}/>
