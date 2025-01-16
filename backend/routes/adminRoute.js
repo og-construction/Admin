@@ -13,7 +13,7 @@ const {
 } = require('../controller/userCtrl'); // Import the user controller functions
 const {  isAdmin, authUserMiddleware, authAdminMiddleware } = require('../middlewares/authMiddleware');
 const { approveProduct, deleteSeller, blockSeller, unblockSeller, getSellerDetails, getProductsBySubcategoryId, deleteProduct, updateProduct, getAllInterestedUsersForAdmin } = require('../controller/sellerCtrl');
-const { getOrderSummary, getPendingOrders, getConfirmedOrders, getShippedOrders, getCancelledOrders, getDeliveredOrders } = require('../controller/adminorderCtrl');
+const { getOrderSummary, getPendingOrders, getConfirmedOrders, getShippedOrders, getCancelledOrders, getDeliveredOrders, getUsersdata, getAllAddresses, getAdminData, getCartData, getCategoryData, getSubcategoryData, getDeliveryChargesData, getInterestedUserData, getOtherPaymentData, getOrderData, getOrderTrackingData, getProductPaymentData, getAllSellerProductVisibility, getSellersdata, getSellerById, getAllWishlists, getWishlistByUserId } = require('../controller/adminorderCtrl');
 const { getAllOrders } = require('../controller/OrderCtrl');
 
 const router = express.Router();
@@ -77,6 +77,28 @@ router.get('/orders', getAllOrders);
 //-----------sellers for graph-----------
 router.get('/seller-metrics', authAdminMiddleware, getSellerMetrics);
 router.get("/earnings", getEarningsData);
+
+
+
+//-----------------data all----------------
+router.get('/all-users', getUsersdata);
+router.get("/addresses", getAllAddresses);
+router.get("/admins", getAdminData);
+router.get("/carts", getCartData);
+router.get("/categories", getCategoryData);
+router.get("/subcategories", getSubcategoryData);
+router.get("/delivery-charges", getDeliveryChargesData);
+router.get("/userInterested", getInterestedUserData);
+router.get("/otherPayment", getOtherPaymentData);
+router.get("/order", getOrderData);
+router.get("/orderTracking",getOrderTrackingData)
+router.get("/product-payments", getProductPaymentData);
+router.get("/sellerPayment", getAllSellerProductVisibility); // Define the route
+router.get("/sellers", getSellersdata); // Route to get all sellers
+router.get("/sellers/:id", getSellerById); // Route to get a single seller by ID
+router.get("/wishlists", getAllWishlists);
+router.get("/wishlists/:userId", getWishlistByUserId);
+
 
 
 module.exports = router;

@@ -36,7 +36,20 @@ import UserDetails from "./components/pages/Users/UserDetails.jsx";
 import AllSellers from "./components/pages/Sellers/allSellers.jsx";
 import AdminSellers from "./components/pages/Sellers/allSellers.jsx";
 import SellerProductsPage from "./components/account/sellerPayment.jsx";
-
+import AllUsersPage from "./components/data/user.jsx";
+import AdminDataPage from "./components/data/admin.jsx";
+import AddressDataPage from "./components/data/address.jsx";
+import CartDataPage from "./components/data/carts.jsx";
+import CategoryDataPage from "./components/data/categories.jsx";
+import DeliveryChargeDataPage from "./components/data/deliverycharges.jsx";
+import SubCategoriesDataPage from "./components/data/subcategories.jsx";
+import InterestedUsersDataPage from "./components/data/interestedusers.jsx";
+import OtherPaymentDataPage from "./components/data/Otherpayments.jsx";
+import OrdersPage from "./components/data/order.jsx";
+import OrderTrackingPage from "./components/data/ordertracking.jsx";
+import SellerProductVisibilityPage from "./components/data/sellerProductPayments.jsx";
+import SellersPage from "./components/data/seller.jsx";
+import WishlistPage from "./components/data/wishlist.jsx";
 const App = () => {
   return (
     <Router>
@@ -91,9 +104,22 @@ const App = () => {
 
                     <Route path="/sellers/all" element={<AdminSellers />} />
                     <Route path="/accounts/seller" element={<SellerProductsPage />} />
-
+                   <Route path='/all-Users' element={<AllUsersPage/>}/>
+                   <Route path="admin" element={<AdminDataPage/>}/>
+                   <Route path="/address" element={<AddressDataPage/>}/>
+                   <Route path="/carts" element={<CartDataPage/>}/>
+                   <Route path="/Categories" element={<CategoryDataPage/>}/>
+                   <Route path="/delivery-charges" element={<DeliveryChargeDataPage/>}/>
+                   <Route path="/sub-categories" element={<SubCategoriesDataPage/>}/>
+                   <Route path="/Interested-users" element={<InterestedUsersDataPage/>}/>
+                   <Route path="/other-payments" element={<OtherPaymentDataPage/>}/>
+                   <Route path="/order" element={<OrdersPage/>}/>
+                   <Route path="/order-tracking" element={<OrderTrackingPage/>}/>
+                   <Route path="/seller-product-payments" element={<SellerProductVisibilityPage/>}/>
+                   <Route path="/sellers" element={<SellersPage/>}/>
+                   <Route path="/wishlist" element={<WishlistPage/>}/>
                     {/* Redirect unknown paths to the dashboard */}
-                    <Route path="*" element={<Navigate to="/accounts/seller" />} />
+                    <Route path="*" element={<Navigate to="/products" />} />
                   </Routes>
                 </div>
               </div>

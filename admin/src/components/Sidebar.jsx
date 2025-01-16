@@ -108,8 +108,11 @@ subMenu: [
   {name: "SubCategories", path: "/sub-categories" },
   {name: "Delivery Charges", path: "/delivery-charges" },
   {name: "Interested Users", path: "/Interested-users" },
-  {name: "Multiple Payments", path: "/multiple-payments" },
+  {name: "Other Payments", path: "/other-payments" },
+  {name: "Order", path: "/order" },
+
   {name: "Order Tracking", path: "/order-tracking" },
+
   {name: "Seller Payments Product", path: "/seller-product-payments" },
   {name: "User Order Payments", path: "/user-payments" },
   {name: "Sellers", path: "/sellers" },
