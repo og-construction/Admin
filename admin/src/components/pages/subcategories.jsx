@@ -224,10 +224,10 @@ const SubcategoryManagement = () => {
                           className="w-32 h-24 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
                         />
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-6 py-4 text-center flex justify-center gap-2">
                         <button
                           onClick={() => handleEdit(subcategory)}
-                          className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 mr-2"
+                          className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
                         >
                           Edit
                         </button>

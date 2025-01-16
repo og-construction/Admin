@@ -75,13 +75,13 @@ const OrdersPage = () => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Orders Management</h1>
-      <div className="flex flex-wrap items-center mb-4 gap-4">
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Orders Management</h1>
+      <div className="flex flex-wrap items-center mb-4 gap-4 bg-gray-100 p-4 rounded-md shadow-md">
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded"
+          className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <option value="All">All Status</option>
           <option value="Pending">Pending</option>
@@ -95,17 +95,17 @@ const OrdersPage = () => {
           placeholder="Search by user name or email..."
           value={search}
           onChange={handleSearch}
-          className="px-4 py-2 border border-gray-300 rounded"
+          className="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
-        <span>Total Orders: {filteredOrders.length}</span>
+        <span className="text-gray-700 font-medium">Total Orders: {filteredOrders.length}</span>
       </div>
 
-      {loading && <div>Loading...</div>}
+      {loading && <div className="text-center text-gray-500">Loading...</div>}
       {error && (
-        <div className="text-red-500">
+        <div className="text-red-500 text-center">
           Error: {error}
           <button
-            className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
+            className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             onClick={handleRetry}
           >
             Retry
@@ -114,10 +114,10 @@ const OrdersPage = () => {
       )}
       {!loading && !error && (
         <>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto shadow-md rounded-lg">
             <table className="table-auto w-full border border-gray-300">
               <thead>
-                <tr className="bg-gray-200">
+                <tr className="bg-blue-100 text-blue-900">
                   <th className="px-4 py-2 border">Order ID</th>
                   <th className="px-4 py-2 border">User</th>
                   <th className="px-4 py-2 border">Email</th>
@@ -128,7 +128,7 @@ const OrdersPage = () => {
               </thead>
               <tbody>
                 {paginatedOrders.map((order) => (
-                  <tr key={order._id}>
+                  <tr key={order._id} className="text-center hover:bg-gray-100">
                     <td className="px-4 py-2 border">{order._id}</td>
                     <td className="px-4 py-2 border">{order.user?.name || "N/A"}</td>
                     <td className="px-4 py-2 border">{order.user?.email || "N/A"}</td>
@@ -142,17 +142,17 @@ const OrdersPage = () => {
               </tbody>
             </table>
           </div>
-          <div className="mt-4 flex justify-center">
+          <div className="mt-4 flex justify-center items-center gap-4">
             <button
-              className="px-4 py-2 border"
+              className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 disabled:opacity-50"
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
               Previous
             </button>
-            <span className="px-4 py-2">{`Page ${currentPage}`}</span>
+            <span className="text-gray-700 font-medium">{`Page ${currentPage} of ${Math.ceil(filteredOrders.length / pageSize)}`}</span>
             <button
-              className="px-4 py-2 border"
+              className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 disabled:opacity-50"
               onClick={() =>
                 setCurrentPage((prev) => {
                   const maxPages = Math.ceil(filteredOrders.length / pageSize);
