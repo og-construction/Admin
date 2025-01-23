@@ -50,13 +50,14 @@ import OrderTrackingPage from "./components/data/ordertracking.jsx";
 import SellerProductVisibilityPage from "./components/data/sellerProductPayments.jsx";
 import SellersPage from "./components/data/seller.jsx";
 import WishlistPage from "./components/data/wishlist.jsx";
+import Register from "./components/admin/Register.jsx";
 const App = () => {
   return (
     <Router>
       <Routes>
         {/* Public Route */}
         <Route path="/login" element={<Login />} />
-
+        <Route path="/register" element={<Register />} />
         {/* Protected Routes */}
         <Route
           path="/*"
@@ -97,7 +98,7 @@ const App = () => {
                     <Route path="/sale-by-ogcs" element={<SaleByOGCSPage />} />
                     <Route path="/ogcs-product-details/:id" element={<OgcsSellerDetailsPage />} />
                     <Route path="/product/:id" element={<ProductDetails />} />
-
+                   
                     <Route path="/user/:id" element={<UserDetails />} />
                     <Route path="/sellers/all" element={<AllSellers />} />
 

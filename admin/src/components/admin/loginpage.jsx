@@ -24,7 +24,8 @@ const Login = () => {
       
       // Save token and admin details to local storage
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("admin", JSON.stringify(response.data.admin));
+      localStorage.setItem("userEmail", response.data.admin.email);
+      localStorage.setItem("userRole", response.data.admin.role); 
 
       navigate("/"); // Redirect to dashboard
     } catch (err) {
